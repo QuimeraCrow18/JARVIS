@@ -1,0 +1,7 @@
+psutil
+opencv-python
+customtkinter
+pillow
+numpy
+pyttsx3
+SpeechRecognition
