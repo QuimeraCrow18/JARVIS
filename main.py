@@ -3,10 +3,11 @@ import os
 import sys
 import subprocess
 import time
+import threading
 
 def autoregistrar_modules_once():
     auto_script = os.path.join(os.path.dirname(__file__), "utils", "autoregistrar.py")
-    # Checa si el script se ha corrido “recientemente” (10 segundos) y si no, lo ejecuta.
+    # Checa si el script se ha corrido "recientemente" (10 segundos) y si no, lo ejecuta.
     # Así no corre dos veces si main.py importa otros scripts.
     flag_file = os.path.join(os.path.dirname(__file__), ".modules_autoreg_flag")
     t = time.time()
@@ -22,7 +23,25 @@ def autoregistrar_modules_once():
         print(f"[MODULAR-AUTOREG] Falló el autoregistro de módulos: {e}")
 
 autoregistrar_modules_once()
-# === FIN DE AUTOIMPORTS/REGISTRO === ==========================================
+# === FIN DE AUTOIMPORTS/REGISTRO ===
+
+# === GIT AUTO-SYNC (SINCRONIZACIÓN AUTOMÁTICA CON GITHUB) ===
+def start_git_auto_sync():
+    try:
+        auto_sync_script = os.path.join(os.path.dirname(__file__), "utils", "git_auto_sync.py")
+        sync_thread = threading.Thread(
+            target=lambda: subprocess.run([sys.executable, auto_sync_script]),
+            daemon=True
+        )
+        sync_thread.start()
+        print("[GIT-AUTO-SYNC] Sincronización automática con GitHub iniciada")
+    except Exception as e:
+        print(f"[GIT-AUTO-SYNC] No se pudo iniciar: {e}")
+
+start_git_auto_sync()
+# === FIN GIT AUTO-SYNC ===
+
+# ==========================================
 # JARVIS CORE SYSTEM
 # ==========================================
 
@@ -142,6 +161,7 @@ AutoRepair activo
 SafeLoader activo
 Logs activos
 Modo modular activo
+Auto-Sync GitHub activo
 
 =========================================
 
@@ -255,16 +275,19 @@ while True:
         )
 
         print("\nJarvis detenido.")
+
+        break
+
     except Exception as error:
 
-     error_manager.handle_error(
-        error,
-        "MAIN_LOOP"
-    )
+        error_manager.handle_error(
+            error,
+            "MAIN_LOOP"
+        )
 
-    print(
-        "Ocurrió un error, pero Jarvis sigue estable."
-    )
+        print(
+            "Ocurrió un error, pero Jarvis sigue estable."
+        )
 
 # ==========================================
 # INICIAR PANEL
