@@ -1,4 +1,28 @@
-# ==========================================
+## === AUTOIMPORTS/REGISTRO AUTOMÁTICO DE MÓDULOS ===
+import os
+import sys
+import subprocess
+import time
+
+def autoregistrar_modules_once():
+    auto_script = os.path.join(os.path.dirname(__file__), "utils", "autoregistrar.py")
+    # Checa si el script se ha corrido “recientemente” (10 segundos) y si no, lo ejecuta.
+    # Así no corre dos veces si main.py importa otros scripts.
+    flag_file = os.path.join(os.path.dirname(__file__), ".modules_autoreg_flag")
+    t = time.time()
+    if os.path.exists(flag_file):
+        last_exec = os.path.getmtime(flag_file)
+        if t - last_exec < 10:
+            return
+    try:
+        subprocess.run([sys.executable, auto_script], check=True)
+        with open(flag_file, "w") as f:
+            f.write(str(t))
+    except Exception as e:
+        print(f"[MODULAR-AUTOREG] Falló el autoregistro de módulos: {e}")
+
+autoregistrar_modules_once()
+# === FIN DE AUTOIMPORTS/REGISTRO === ==========================================
 # JARVIS CORE SYSTEM
 # ==========================================
 
