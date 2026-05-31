@@ -7,3 +7,6 @@ pyttsx3
 SpeechRecognition
 mediapipe
 deepface
+watchdog
+pyautogui
+flask

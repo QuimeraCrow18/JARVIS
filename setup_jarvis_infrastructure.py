@@ -271,7 +271,7 @@ threat = fraud.analyze_call_transcript(
 
 # Si es amenaza, alerta a familia
 if threat["overall_threat_score"] >= 50:
-    fraud.trigger_alert_to_family(threat, {"phone": "+1-555-123-4567"})
+    fraud.trigger_alert_to_family(threat, {"phone": r"+1-555-123-4567"})
 ```
 
 ### Detección Video vs Real

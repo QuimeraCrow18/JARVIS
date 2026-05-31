@@ -143,3 +143,318 @@ ModuleNotFoundError: No module named 'voice.voice'
 [2026-05-19 22:39:09] [INFO] [OK] render
 [2026-05-19 22:39:09] [INFO] [OK] faces_panel
 [2026-05-19 22:39:09] [INFO] Jarvis iniciado correctamente.
+[2026-05-30 15:34:30] [WARNING] Falta dependencia: cv2
+[2026-05-30 15:34:30] [INFO] Instalando dependencia: opencv-python
+[2026-05-30 15:35:12] [ERROR] Error instalando opencv-python: Command '['C:\\Users\\alba\\AppData\\Local\\Programs\\Python\\Python312\\python.exe', '-m', 'pip', 'install', 'opencv-python']' returned non-zero exit status 1.
+[2026-05-30 15:35:12] [INFO] Dependencia OK: PIL
+[2026-05-30 15:36:29] [INFO] Módulo cargado: voice.voice
+[2026-05-30 15:36:29] [ERROR] [modules.media_module] 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+[2026-05-30 15:36:29] [ERROR] Traceback (most recent call last):
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 24, in <module>
+    from . import multiarray
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+ImportError: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\media_module.py", line 6, in <module>
+    import cv2
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\cv2\__init__.py", line 11, in <module>
+    import numpy
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 85, in <module>
+    raise ImportError(msg) from exc
+ImportError: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+
+[2026-05-30 15:36:29] [WARNING] Módulo desactivado: modules.media_module
+[2026-05-30 17:12:10] [ERROR] [modules.face_recognition_module] No module named 'cv2'
+[2026-05-30 17:12:10] [ERROR] Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\face_recognition_module.py", line 2, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+[2026-05-30 17:12:10] [WARNING] Módulo desactivado: modules.face_recognition_module
+[2026-05-30 17:12:43] [INFO] Módulo cargado: modules.face_recognition_module
+[2026-05-30 17:28:27] [INFO] Módulo cargado: modules.learning_module
+[2026-05-30 17:29:54] [INFO] Módulo cargado: modules.learning_module
+[2026-05-30 18:22:38] [INFO] Módulo cargado: modules.webremote_module
+[2026-05-31 00:51:07] [INFO] =================================
+[2026-05-31 00:51:07] [INFO] INICIANDO JARVIS
+[2026-05-31 00:51:07] [INFO] =================================
+[2026-05-31 00:51:07] [INFO] Iniciando sistema AutoRepair...
+[2026-05-31 00:51:07] [WARNING] Falta dependencia: cv2
+[2026-05-31 00:51:07] [INFO] Instalando dependencia: opencv-python
+[2026-05-31 00:55:39] [INFO] Dependencia instalada: opencv-python
+[2026-05-31 00:55:41] [INFO] Dependencia OK: PIL
+[2026-05-31 00:56:11] [INFO] Dependencia OK: customtkinter
+[2026-05-31 00:56:25] [WARNING] Falta dependencia: numpy
+[2026-05-31 00:56:25] [INFO] Instalando dependencia: numpy
+[2026-05-31 00:57:26] [INFO] Dependencia instalada: numpy
+[2026-05-31 00:57:26] [INFO] AutoRepair finalizado.
+[2026-05-31 00:57:26] [INFO] Cargando módulos seguros...
+[2026-05-31 00:57:26] [INFO] Módulo cargado: voice.voice
+[2026-05-31 00:57:34] [ERROR] [modules.media_module] 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+[2026-05-31 00:57:34] [ERROR] Traceback (most recent call last):
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 24, in <module>
+    from . import multiarray
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+ImportError: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\media_module.py", line 6, in <module>
+    import cv2
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\cv2\__init__.py", line 11, in <module>
+    import numpy
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 85, in <module>
+    raise ImportError(msg) from exc
+ImportError: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+
+[2026-05-31 00:57:34] [WARNING] Módulo desactivado: modules.media_module
+[2026-05-31 00:57:34] [ERROR] [modules.enhance_module] 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+[2026-05-31 00:57:34] [ERROR] Traceback (most recent call last):
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 24, in <module>
+    from . import multiarray
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+ImportError: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\enhance_module.py", line 7, in <module>
+    import cv2
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\cv2\__init__.py", line 11, in <module>
+    import numpy
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__init__.py", line 125, in <module>
+    from numpy.__config__ import show_config
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\_core\__init__.py", line 85, in <module>
+    raise ImportError(msg) from exc
+ImportError: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\Users\alba\AppData\Local\Programs\Python\Python312\python.exe"
+  * The NumPy version is: "2.4.6"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: Error en una rutina de inicialización de biblioteca de vínculos dinámicos (DLL).
+
+
+[2026-05-31 00:57:34] [WARNING] Módulo desactivado: modules.enhance_module
+[2026-05-31 00:57:35] [INFO] Módulo cargado: modules.automation_module
+[2026-05-31 00:57:37] [INFO] Módulo cargado: modules.memory_module
+[2026-05-31 00:57:37] [INFO] Módulo cargado: ui.render_panel
+[2026-05-31 00:57:37] [INFO] Módulo cargado: ui.faces_panel
+[2026-05-31 00:57:37] [INFO] Módulo cargado: modules.face_recognition_module
+[2026-05-31 00:57:37] [INFO] Módulo cargado: modules.learning_module
+[2026-05-31 00:57:38] [INFO] Módulo cargado: modules.webremote_module
+[2026-05-31 00:57:39] [INFO] Módulo cargado: modules.knowledge_engine
+[2026-05-31 00:57:39] [INFO] Verificando módulos cargados...
+[2026-05-31 00:57:39] [INFO] [OK] voice
+[2026-05-31 00:57:39] [WARNING] [DESACTIVADO] media
+[2026-05-31 00:57:39] [WARNING] [DESACTIVADO] enhance
+[2026-05-31 00:57:39] [INFO] [OK] automation
+[2026-05-31 00:57:39] [INFO] [OK] memory
+[2026-05-31 00:57:39] [INFO] [OK] render
+[2026-05-31 00:57:39] [INFO] [OK] faces_panel
+[2026-05-31 00:57:39] [INFO] [OK] face_recognition
+[2026-05-31 00:57:39] [INFO] [OK] learning
+[2026-05-31 00:57:39] [INFO] [OK] webremote
+[2026-05-31 00:57:39] [INFO] [OK] knowledge

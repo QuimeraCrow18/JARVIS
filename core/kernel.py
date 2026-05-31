@@ -29,10 +29,10 @@ class JarvisKernel:
 
     def load_core_modules(self):
 
-        self.module_loader.load_module("voice_system")
-        self.module_loader.load_module("memory_system")
-        self.module_loader.load_module("device_analyzer")
-        self.module_loader.load_module("optimizer")
+        self.module_loader.load_module("voice.voice")
+        self.module_loader.load_module("modules.memory_module")
+        self.module_loader.load_module("modules.voice_module")
+        self.module_loader.load_module("modules.media_module")
 
     def show_loaded_modules(self):
 

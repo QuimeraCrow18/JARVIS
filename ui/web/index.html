@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Remote</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #050816;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0f1f; }
+        ::-webkit-scrollbar-thumb { background: #1a2a4a; border-radius: 3px; }
+
+        /* SPLASH OVERLAY */
+        #splash {
+            position: fixed;
+            inset: 0;
+            background: #050816;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        #splash.hidden { opacity: 0; pointer-events: none; }
+        #splash h1 {
+            font-size: 3.5em;
+            color: #00D9FF;
+            font-family: 'Consolas', monospace;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0,217,255,0.3);
+        }
+        #splash p {
+            color: #446688;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+        #splash .ring-container {
+            position: relative;
+            width: 120px; height: 120px;
+            margin-bottom: 30px;
+        }
+        #splash .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            animation: spin 2s linear infinite;
+        }
+        #splash .ring:nth-child(1) {
+            inset: 0;
+            border-top-color: #00D9FF;
+            border-right-color: rgba(0,217,255,0.3);
+            animation-duration: 1.5s;
+        }
+        #splash .ring:nth-child(2) {
+            inset: 12px;
+            border-bottom-color: #00FF88;
+            border-left-color: rgba(0,255,136,0.3);
+            animation-duration: 2s;
+            animation-direction: reverse;
+        }
+        #splash .ring:nth-child(3) {
+            inset: 24px;
+            border-top-color: #8866FF;
+            border-right-color: rgba(136,102,255,0.3);
+            animation-duration: 2.5s;
+        }
+        #splash .status-text {
+            margin-top: 20px;
+            color: #667788;
+            font-family: 'Consolas', monospace;
+            font-size: 0.75em;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* HEADER */
+        header {
+            background: #0a0f1f;
+            padding: 12px 24px;
+            border-bottom: 1px solid #1a1f3a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        header .brand h1 {
+            color: #00d9ff;
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        header .brand .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #0a3a1a;
+            transition: background 0.3s;
+        }
+        header .brand .dot.online { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        header .brand .dot.offline { background: #ff4444; }
+        #status-badge {
+            font-size: 0.7em;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: #0a3a1a;
+            color: #00ff88;
+            border: 1px solid rgba(0,255,136,0.2);
+        }
+        #status-badge.offline { background: #3a0a0a; color: #ff4444; border-color: rgba(255,68,68,0.2); }
+        header .nav {
+            display: flex;
+            gap: 2px;
+            background: #050816;
+            border-radius: 8px;
+            padding: 2px;
+        }
+        header .nav button {
+            background: none;
+            border: none;
+            color: #556;
+            padding: 8px 16px;
+            font-size: 0.8em;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'Consolas', monospace;
+        }
+        header .nav button:hover { color: #aaa; background: #0a0f1f; }
+        header .nav button.active { color: #00d9ff; background: #0a1525; }
+
+        /* MAIN LAYOUT */
+        .app {
+            display: flex;
+            height: calc(100vh - 56px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #080d1a;
+            border-right: 1px solid #1a1f3a;
+            padding: 16px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-section h3 {
+            color: #446688;
+            font-size: 0.65em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: 'Consolas', monospace;
+        }
+        .stat-card {
+            background: #0a0f1f;
+            border: 1px solid #1a1f3a;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+        }
+        .stat-card .label {
+            color: #667788;
+            font-size: 0.7em;
+            font-family: 'Consolas', monospace;
+        }
+        .stat-card .value {
+            color: #00d9ff;
+            font-size: 1.2em;
+            font-weight: 700;
+            font-family: 'Consolas', monospace;
+        }
+        .stat-card .value.green { color: #00ff88; }
+        .stat-card .value.purple { color: #8866ff; }
+        .stat-card .value.yellow { color: #ffaa00; }
+        .bar-container {
+            background: #1a1f3a;
+            border-radius: 4px;
+            height: 4px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        .bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+            background: linear-gradient(90deg, #00d9ff, #0066ff);
+        }
+        .bar.green { background: linear-gradient(90deg, #00ff88, #00cc66); }
+
+        /* MAIN CONTENT */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 20px;
+            overflow: hidden;
+        }
+        .tab-content { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .tab-content.active { display: flex; }
+
+        /* CHAT TAB */
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            background: #080d1a;
+            border-radius: 12px;
+            border: 1px solid #1a1f3a;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat:empty::after {
+            content: 'Conectando con JARVIS...';
+            display: block;
+            text-align: center;
+            color: #555;
+            padding: 40px;
+            font-family: 'Consolas', monospace;
+        }
+        .msg {
+            padding: 8px 14px;
+            margin: 4px 0;
+            border-radius: 10px;
+            max-width: 88%;
+            word-wrap: break-word;
+            font-size: 0.9em;
+            line-height: 1.4;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .user-msg {
+            background: #002244;
+            color: #00d9ff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .jarvis-msg {
+            background: #0a1a1a;
+            color: #00ff88;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .system-msg {
+            background: #1a1a0a;
+            color: #ffaa00;
+            text-align: center;
+            font-size: 0.75em;
+            align-self: center;
+            max-width: 70%;
+        }
+        .info-msg {
+            background: #0a0a2a;
+            color: #8888ff;
+            font-size: 0.75em;
+            align-self: center;
+            text-align: center;
+            max-width: 70%;
+        }
+        .input-row {
+            display: flex;
+            gap: 8px;
+        }
+        #cmd-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #1a1f3a;
+            border-radius: 10px;
+            background: #0a0f1f;
+            color: #e0e0e0;
+            font-size: 0.9em;
+            outline: none;
+            transition: border 0.2s;
+            font-family: 'Consolas', monospace;
+        }
+        #cmd-input:focus { border-color: #00d9ff; }
+        #cmd-input::placeholder { color: #444; }
+        #send-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            background: #00d9ff;
+            color: #050816;
+            font-weight: 700;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #send-btn:hover { background: #00b8d4; }
+        #send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin: 6px 0 10px;
+        }
+        .quick-btn {
+            padding: 5px 12px;
+            border: 1px solid #1a1f3a;
+            border-radius: 6px;
+            background: #0a0f1f;
+            color: #778;
+            font-size: 0.7em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Consolas', monospace;
+        }
+        .quick-btn:hover { border-color: #00d9ff; color: #00d9ff; background: #0a1525; }
+
+        /* KNOWLEDGE TAB */
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .knowledge-panel {
+            background: #080d1a;
+            border: 1px solid #1a1f3a;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .knowledge-panel h2 {
+            color: #00d9ff;
+            font-size: 0.9em;
+            font-family: 'Consolas', monospace;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .knowledge-panel h2 .badge {
+            font-size: 0.7em;
+            color: #446688;
+            font-weight: 400;
+        }
+        .knowledge-panel textarea {
+            width: 100%;
+            flex: 1;
+            background: #0a0f1f;
+            border: 1px solid #1a1f3a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            padding: 12px;
+            font-size: 0.85em;
+            resize: none;
+            outline: none;
+            font-family: 'Consolas', monospace;
+            min-height: 80px;
+        }
+        .knowledge-panel textarea:focus { border-color: #00d9ff; }
+        .knowledge-panel .input-group {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0;
+        }
+        .knowledge-panel .input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            background: #0a0f1f;
+            border: 1px solid #1a1f3a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            outline: none;
+            font-size: 0.85em;
+        }
+        .knowledge-panel .input-group input:focus { border-color: #00d9ff; }
+        .knowledge-panel .input-group input::placeholder { color: #444; }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8em;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #00d9ff; color: #050816; }
+        .btn-primary:hover { background: #00b8d4; }
+        .btn-secondary { background: #1a1f3a; color: #aaa; }
+        .btn-secondary:hover { background: #2a2f5a; color: #fff; }
+        .btn-success { background: #00aa55; color: #fff; }
+        .btn-success:hover { background: #008844; }
+        .btn-purple { background: #5533aa; color: #fff; }
+        .btn-purple:hover { background: #6644bb; }
+        .knowledge-results {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 8px;
+        }
+        .knowledge-results .result-item {
+            padding: 8px 10px;
+            background: #0a0f1f;
+            border: 1px solid #1a1f3a;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+        .knowledge-results .result-item .meta {
+            color: #446688;
+            font-size: 0.75em;
+            font-family: 'Consolas', monospace;
+            margin-top: 4px;
+        }
+
+        /* TOPICS LIST */
+        .topic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        .topic-tag {
+            padding: 2px 10px;
+            background: #0a1525;
+            border: 1px solid #1a2a4a;
+            border-radius: 12px;
+            color: #00d9ff;
+            font-size: 0.65em;
+            font-family: 'Consolas', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .topic-tag:hover { border-color: #00d9ff; background: #0a1f3a; }
+
+        /* BACKENDS */
+        .backend-list {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .backend-chip {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.7em;
+            font-family: 'Consolas', monospace;
+            border: 1px solid #1a1f3a;
+        }
+        .backend-chip.avail { border-color: #00ff88; color: #00ff88; background: #0a1a1a; }
+        .backend-chip.unavail { border-color: #553333; color: #664444; background: #1a0a0a; }
+
+        .ai-query-row {
+            display: flex;
+            gap: 8px;
+        }
+        .ai-query-row input {
+            flex: 1;
+            padding: 8px 12px;
+            background: #0a0f1f;
+            border: 1px solid #1a1f3a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            outline: none;
+            font-size: 0.85em;
+            font-family: 'Consolas', monospace;
+        }
+        .ai-query-row input:focus { border-color: #8866ff; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .knowledge-grid { grid-template-columns: 1fr; }
+            header .nav button { padding: 6px 10px; font-size: 0.7em; }
+            #splash h1 { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SPLASH SCREEN -->
+    <div id="splash">
+        <div class="ring-container">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+        </div>
+        <h1>JARVIS</h1>
+        <p>Just A Rather Very Intelligent System</p>
+        <div class="status-text" id="splash-status">INICIANDO...</div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="brand">
+            <div class="dot offline" id="status-dot"></div>
+            <h1>JARVIS</h1>
+        </div>
+        <div class="nav" id="main-nav">
+            <button class="active" data-tab="chat">TERMINAL</button>
+            <button data-tab="knowledge">CONOCIMIENTO</button>
+            <button data-tab="ai">IA</button>
+        </div>
+        <span id="status-badge" class="offline">DESCONECTADO</span>
+    </header>
+
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3>Sistema</h3>
+                <div class="stat-card">
+                    <div class="label">CPU</div>
+                    <div class="value" id="cpu-val">0%</div>
+                    <div class="bar-container"><div class="bar" id="cpu-bar" style="width:0%"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">RAM</div>
+                    <div class="value" id="ram-val">0%</div>
+                    <div class="bar-container"><div class="bar green" id="ram-bar" style="width:0%"></div></div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3>Conocimiento</h3>
+                <div class="stat-card">
+                    <div class="label">Entradas</div>
+                    <div class="value green" id="k-total">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Temas</div>
+                    <div class="value purple" id="k-topics">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Fuentes</div>
+                    <div class="value yellow" id="k-sources">0</div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3>Plataforma</h3>
+                <div class="stat-card">
+                    <div class="label">Sistema</div>
+                    <div class="value" style="font-size:0.85em" id="platform-name">---</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+            <!-- TAB: CHAT -->
+            <div class="tab-content active" id="tab-chat">
+                <div id="chat"></div>
+                <div class="quick-actions">
+                    <button class="quick-btn" data-cmd="status">status</button>
+                    <button class="quick-btn" data-cmd="que sabes">que sabes</button>
+                    <button class="quick-btn" data-cmd="conversaciones">historial</button>
+                    <button class="quick-btn" data-cmd="plataforma">plataforma</button>
+                    <button class="quick-btn" data-cmd="temas">temas</button>
+                    <button class="quick-btn" data-cmd="ia backends">backends</button>
+                </div>
+                <div class="input-row">
+                    <input type="text" id="cmd-input" placeholder="Escribe un comando..." autofocus>
+                    <button id="send-btn" disabled>Enviar</button>
+                </div>
+            </div>
+
+            <!-- TAB: KNOWLEDGE -->
+            <div class="tab-content" id="tab-knowledge">
+                <div class="knowledge-grid">
+                    <div class="knowledge-panel">
+                        <h2>Buscar <span class="badge">— conocimiento local</span></h2>
+                        <div class="input-group">
+                            <input type="text" id="k-search-input" placeholder="¿Qué quieres saber?">
+                            <button class="btn btn-primary" id="k-search-btn">Buscar</button>
+                        </div>
+                        <div class="knowledge-results" id="k-results"></div>
+                    </div>
+                    <div class="knowledge-panel">
+                        <h2>Absorber <span class="badge">— nueva información</span></h2>
+                        <div class="topic-list" id="topic-list"></div>
+                        <textarea id="k-text-input" placeholder="Pega texto, código o lo que quieras que JARVIS aprenda..."></textarea>
+                        <div class="input-group">
+                            <input type="url" id="k-url-input" placeholder="O una URL para absorber...">
+                            <button class="btn btn-secondary" id="k-url-btn">URL</button>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-top:6px">
+                            <button class="btn btn-success" id="k-absorb-btn">Absorber texto</button>
+                            <button class="btn btn-secondary" id="k-refresh-btn">Actualizar</button>
+                        </div>
+                        <div id="k-feedback" style="margin-top:6px;font-size:0.75em;color:#446688;font-family:'Consolas',monospace"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: AI -->
+            <div class="tab-content" id="tab-ai">
+                <div class="knowledge-grid">
+                    <div class="knowledge-panel">
+                        <h2>Backends <span class="badge">— inteligencia artificial</span></h2>
+                        <div class="backend-list" id="backend-list"></div>
+                        <div class="ai-query-row">
+                            <input type="text" id="ai-query-input" placeholder="Pregunta a todas las IAs...">
+                            <button class="btn btn-purple" id="ai-query-btn">Preguntar</button>
+                        </div>
+                        <div class="knowledge-results" id="ai-results"></div>
+                    </div>
+                    <div class="knowledge-panel">
+                        <h2>Resultado <span class="badge">— respuesta IA</span></h2>
+                        <div class="knowledge-results" id="ai-answer" style="display:flex;align-items:center;justify-content:center;color:#446688;font-family:'Consolas',monospace;font-size:0.85em">
+                            Haz una pregunta para empezar
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // === SPLASH ===
+        const splashStatuses = ['INICIANDO...', 'CARGANDO MÓDULOS...', 'CONECTANDO...', 'SINCRONIZANDO...', 'ONLINE'];
+        let splashIdx = 0;
+        const splashEl = document.getElementById('splash');
+        const splashStatus = document.getElementById('splash-status');
+        const splashInterval = setInterval(() => {
+            splashIdx = (splashIdx + 1) % splashStatuses.length;
+            splashStatus.textContent = splashStatuses[splashIdx];
+        }, 600);
+        setTimeout(() => {
+            clearInterval(splashInterval);
+            splashStatus.textContent = 'ONLINE';
+            splashStatus.style.color = '#00ff88';
+            setTimeout(() => {
+                splashEl.classList.add('hidden');
+                setTimeout(() => splashEl.remove(), 800);
+            }, 400);
+        }, 2500);
+
+        // === NAV ===
+        document.querySelectorAll('#main-nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // === CHAT ===
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('cmd-input');
+        const sendBtn = document.getElementById('send-btn');
+        const statusBadge = document.getElementById('status-badge');
+        const statusDot = document.getElementById('status-dot');
+        let online = false;
+        let platformData = null;
+
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + type;
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // === STATUS ===
+        function checkStatus() {
+            fetch('/api/status')
+                .then(r => r.json())
+                .then(data => {
+                    online = true;
+                    statusBadge.textContent = 'EN LÍNEA';
+                    statusBadge.className = '';
+                    statusDot.className = 'dot online';
+                    sendBtn.disabled = false;
+                    platformData = data.platform;
+                    if (data.platform) {
+                        document.getElementById('platform-name').textContent = data.platform.friendly_name || data.platform.platform || '---';
+                    }
+                    if (data.memory) {
+                        document.getElementById('k-total').textContent = data.memory.facts || 0;
+                    }
+                })
+                .catch(() => {
+                    online = false;
+                    statusBadge.textContent = 'DESCONECTADO';
+                    statusBadge.className = 'offline';
+                    statusDot.className = 'dot offline';
+                    sendBtn.disabled = true;
+                });
+        }
+
+        function sendCommand(cmd) {
+            if (!cmd.trim()) return;
+            addMessage(cmd, 'user-msg');
+            input.value = '';
+            fetch('/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: cmd })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const result = data.result || 'Comando ejecutado';
+                addMessage(String(result), 'jarvis-msg');
+            })
+            .catch(() => addMessage('Error de conexión', 'system-msg'));
+        }
+
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && online) sendCommand(input.value);
+        });
+        sendBtn.addEventListener('click', () => sendCommand(input.value));
+        document.querySelectorAll('.quick-btn[data-cmd]').forEach(btn => {
+            btn.addEventListener('click', () => sendCommand(btn.dataset.cmd));
+        });
+
+        // === MONITORING ===
+        function updateStats() {
+            fetch('/api/status')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.memory) {
+                        document.getElementById('k-total').textContent = data.memory.facts || 0;
+                    }
+                })
+                .catch(() => {});
+            fetch('/api/platform')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('platform-name').textContent = data.friendly_name || data.platform || '---';
+                })
+                .catch(() => {});
+            // Simulated CPU/RAM from client side
+            if ('performance' in window && 'memory' in navigator) {
+                const mem = navigator.memory;
+                if (mem) {
+                    const pct = Math.round((mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100);
+                    document.getElementById('ram-val').textContent = pct + '%';
+                    document.getElementById('ram-bar').style.width = pct + '%';
+                }
+            }
+        }
+
+        // === KNOWLEDGE ===
+        function loadTopics() {
+            fetch('/api/knowledge/topics')
+                .then(r => r.json())
+                .then(topics => {
+                    const container = document.getElementById('topic-list');
+                    if (!topics || topics.length === 0) {
+                        container.innerHTML = '<span style="color:#446688;font-size:0.7em">Sin temas aún</span>';
+                        return;
+                    }
+                    container.innerHTML = topics.map(t =>
+                        `<span class="topic-tag" data-topic="${t}">${t}</span>`
+                    ).join('');
+                    document.querySelectorAll('.topic-tag').forEach(el => {
+                        el.addEventListener('click', () => {
+                            document.getElementById('k-search-input').value = el.dataset.topic;
+                            doKnowledgeSearch(el.dataset.topic);
+                        });
+                    });
+                })
+                .catch(() => {});
+        }
+
+        function loadKnowledgeStats() {
+            fetch('/api/knowledge/stats')
+                .then(r => r.json())
+                .then(stats => {
+                    document.getElementById('k-total').textContent = stats.total_absorbed || 0;
+                    document.getElementById('k-topics').textContent = stats.topics || 0;
+                    document.getElementById('k-sources').textContent = stats.sources || 0;
+                })
+                .catch(() => {});
+        }
+
+        function doKnowledgeSearch(query) {
+            const resultsEl = document.getElementById('k-results');
+            resultsEl.innerHTML = '<div style="color:#446688;font-size:0.75em">Buscando...</div>';
+            fetch('/api/knowledge/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const results = data.results || [];
+                if (results.length === 0) {
+                    resultsEl.innerHTML = '<div style="color:#446688;font-size:0.75em;padding:12px">Sin resultados</div>';
+                    return;
+                }
+                resultsEl.innerHTML = results.map(r =>
+                    `<div class="result-item">
+                        ${r.content.substring(0, 300)}
+                        <div class="meta">fuente: ${r.source} · tema: ${r.topic} · score: ${r.score}</div>
+                    </div>`
+                ).join('');
+            })
+            .catch(() => {
+                resultsEl.innerHTML = '<div style="color:#664444;font-size:0.75em">Error de conexión</div>';
+            });
+        }
+
+        document.getElementById('k-search-btn').addEventListener('click', () => {
+            const q = document.getElementById('k-search-input').value.trim();
+            if (q) doKnowledgeSearch(q);
+        });
+        document.getElementById('k-search-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('k-search-btn').click();
+        });
+
+        document.getElementById('k-absorb-btn').addEventListener('click', () => {
+            const text = document.getElementById('k-text-input').value.trim();
+            const feedback = document.getElementById('k-feedback');
+            if (!text) { feedback.textContent = 'Escribe algo para absorber'; return; }
+            fetch('/api/knowledge/absorb', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, source: 'web-ui', topic: 'general' })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.absorbed) {
+                    feedback.textContent = '✓ Conocimiento absorbido';
+                    document.getElementById('k-text-input').value = '';
+                    loadTopics();
+                    loadKnowledgeStats();
+                } else {
+                    feedback.textContent = '✗ Error al absorber';
+                }
+            })
+            .catch(() => { feedback.textContent = '✗ Error de conexión'; });
+        });
+
+        document.getElementById('k-url-btn').addEventListener('click', () => {
+            const url = document.getElementById('k-url-input').value.trim();
+            const feedback = document.getElementById('k-feedback');
+            if (!url) { feedback.textContent = 'Escribe una URL'; return; }
+            feedback.textContent = 'Absorbiendo URL...';
+            fetch('/api/knowledge/absorb', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url, source: 'web-ui' })
+            })
+            .then(r => r.json())
+            .then(data => {
+                feedback.textContent = data.message || (data.absorbed ? '✓ URL absorbida' : '✗ Error');
+                if (data.absorbed) {
+                    document.getElementById('k-url-input').value = '';
+                    loadTopics();
+                    loadKnowledgeStats();
+                }
+            })
+            .catch(() => { feedback.textContent = '✗ Error de conexión'; });
+        });
+
+        document.getElementById('k-refresh-btn').addEventListener('click', () => {
+            loadTopics();
+            loadKnowledgeStats();
+        });
+
+        // === AI BACKENDS ===
+        function loadBackends() {
+            const container = document.getElementById('backend-list');
+            fetch('/api/backends')
+                .then(r => r.json())
+                .then(backends => {
+                    if (!backends || Object.keys(backends).length === 0) {
+                        container.innerHTML = '<span class="backend-chip unavail">Sin backends disponibles</span>';
+                        return;
+                    }
+                    container.innerHTML = Object.entries(backends).map(([name, info]) =>
+                        `<span class="backend-chip avail">${name}</span>`
+                    ).join('');
+                })
+                .catch(() => {
+                    container.innerHTML = '<span class="backend-chip unavail">No disponible</span>';
+                });
+        }
+
+        document.getElementById('ai-query-btn').addEventListener('click', () => {
+            const q = document.getElementById('ai-query-input').value.trim();
+            const resultsEl = document.getElementById('ai-results');
+            const answerEl = document.getElementById('ai-answer');
+            if (!q) return;
+            resultsEl.innerHTML = '<div style="color:#446688;font-size:0.75em">Consultando IAs...</div>';
+            answerEl.textContent = 'Esperando respuesta...';
+            fetch('/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: 'ia ' + q })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const result = data.result || 'Sin respuesta';
+                answerEl.innerHTML = '';
+                const pre = document.createElement('div');
+                pre.className = 'result-item';
+                pre.textContent = result.substring(0, 600);
+                answerEl.appendChild(pre);
+                resultsEl.innerHTML = '<div style="color:#00ff88;font-size:0.75em">✓ Respuesta recibida</div>';
+            })
+            .catch(() => {
+                answerEl.textContent = 'Error de conexión';
+                resultsEl.innerHTML = '<div style="color:#664444;font-size:0.75em">Error</div>';
+            });
+        });
+        document.getElementById('ai-query-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('ai-query-btn').click();
+        });
+
+        // === INTERVALS ===
+        checkStatus();
+        setInterval(checkStatus, 15000);
+        setInterval(updateStats, 5000);
+        setInterval(loadKnowledgeStats, 10000);
+        setTimeout(() => {
+            loadTopics();
+            loadKnowledgeStats();
+            loadBackends();
+        }, 1000); // after splash
+    </script>
+</body>
+</html>

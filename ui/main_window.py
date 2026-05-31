@@ -2,6 +2,7 @@ import customtkinter as ctk
 import psutil
 import threading
 import time
+from ui.splash import SplashScreen
 
 # ==========================================
 # CONFIGURACIÓN BASE
@@ -16,13 +17,16 @@ ctk.set_default_color_theme("blue")
 
 class JarvisUI(ctk.CTk):
 
-    def __init__(self):
+    def __init__(self, splash=None):
         super().__init__()
 
         self.title("JARVIS")
         self.geometry("1200x700")
 
         self.configure(fg_color="#050816")
+
+        if splash:
+            self.after(500, splash.close)
 
         # ==================================
         # PANEL IZQUIERDO
@@ -197,7 +201,6 @@ class JarvisUI(ctk.CTk):
 # ==========================================
 
 def start_ui():
-
-    app = JarvisUI()
-
+    splash = SplashScreen()
+    app = JarvisUI(splash=splash)
     app.mainloop()
