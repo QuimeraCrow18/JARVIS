@@ -458,3 +458,10 @@ Original error was: DLL load failed while importing _multiarray_umath: Error en 
 [2026-05-31 00:57:39] [INFO] [OK] learning
 [2026-05-31 00:57:39] [INFO] [OK] webremote
 [2026-05-31 00:57:39] [INFO] [OK] knowledge
+[2026-05-31 04:17:26] [INFO] =================================
+[2026-05-31 04:17:26] [INFO] INICIANDO JARVIS
+[2026-05-31 04:17:26] [INFO] =================================
+[2026-05-31 04:17:26] [INFO] Iniciando sistema AutoRepair...
+[2026-05-31 04:19:56] [INFO] Módulo cargado: modules.learning_module
+[2026-05-31 04:19:56] [INFO] Módulo cargado: modules.enhance_module
+[2026-05-31 04:19:56] [INFO] Módulo cargado: modules.swapface_module

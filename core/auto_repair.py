@@ -31,10 +31,10 @@ class AutoRepair:
                     f"Dependencia OK: {module_name}"
                 )
 
-            except ImportError:
+            except Exception:
 
                 self.logger.warning(
-                    f"Falta dependencia: {module_name}"
+                    f"Dependencia no disponible: {module_name}"
                 )
 
                 self.dependency_manager.install(package_name)

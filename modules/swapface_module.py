@@ -3,17 +3,24 @@
 # modules/swapface_module.py
 # ==========================================
 
-import cv2
-import mediapipe as mp
-import numpy as np
-
 from core.utils import safe_method
 
 class SwapFaceModule:
     def __init__(self):
-        print("[SWAPFACE] Módulo de intercambio de rostros iniciado.")
-        self.face_mesh = mp.solutions.face_mesh.FaceMesh(static_image_mode=True, max_num_faces=2)
-        self.drawing_utils = mp.solutions.drawing_utils
+        self._available = False
+        try:
+            import cv2
+            import mediapipe as mp
+            import numpy as np
+            self.cv2 = cv2
+            self.mp = mp
+            self.np = np
+            self.face_mesh = mp.solutions.face_mesh.FaceMesh(static_image_mode=True, max_num_faces=2)
+            self.drawing_utils = mp.solutions.drawing_utils
+            self._available = True
+            print("[SWAPFACE] Modulo de intercambio de rostros iniciado.")
+        except Exception as e:
+            print(f"[SWAPFACE] Dependencias no disponibles: {e}")
 
     @safe_method
     def detect_faces(self, image):

@@ -3,7 +3,6 @@
 # ==========================================
 
 import os
-import cv2
 import shutil
 import tempfile
 
@@ -13,10 +12,17 @@ class MediaModule:
     def __init__(self):
 
         self.files = []
+        self._cv2 = None
 
         print(
             "[MEDIA] Módulo cargado."
         )
+
+    def _get_cv2(self):
+        if self._cv2 is None:
+            import cv2
+            self._cv2 = cv2
+        return self._cv2
 
     # ======================================
     # CARGAR ARCHIVOS
@@ -38,8 +44,8 @@ class MediaModule:
 
         detected_faces = []
 
-        face_detector = cv2.CascadeClassifier(
-            cv2.data.haarcascades +
+        face_detector = self._get_cv2().CascadeClassifier(
+            self._get_cv2().data.haarcascades +
             "haarcascade_frontalface_default.xml"
         )
 
@@ -49,15 +55,15 @@ class MediaModule:
 
                 continue
 
-            image = cv2.imread(file)
+            image = self._get_cv2().imread(file)
 
             if image is None:
 
                 continue
 
-            gray = cv2.cvtColor(
+            gray = self._get_cv2().cvtColor(
                 image,
-                cv2.COLOR_BGR2GRAY
+                self._get_cv2().COLOR_BGR2GRAY
             )
 
             faces = face_detector.detectMultiScale(
@@ -123,7 +129,7 @@ class MediaModule:
 
         for replacement in replacement_files:
 
-            image = cv2.imread(
+            image = self._get_cv2().imread(
                 replacement
             )
 
@@ -153,7 +159,7 @@ class MediaModule:
 
             h = face_data["h"]
 
-            image = cv2.imread(file)
+            image = self._get_cv2().imread(file)
 
             if image is None:
 
@@ -163,7 +169,7 @@ class MediaModule:
                 index % len(replacement_images)
             ]
 
-            resized_face = cv2.resize(
+            resized_face = self._get_cv2().resize(
                 replacement,
                 (w, h)
             )
@@ -178,7 +184,7 @@ class MediaModule:
                 + f"/faceswap_{index}.jpg"
             )
 
-            cv2.imwrite(
+            self._get_cv2().imwrite(
                 output_file,
                 image
             )

@@ -3,18 +3,27 @@
 # modules/swapface_video_gender_blend.py
 # ==========================================
 
-import cv2
-import mediapipe as mp
-import numpy as np
-from deepface import DeepFace
 from core.utils import safe_method
 import random
 
 class SwapFaceVideoGenderBlendModule:
     def __init__(self):
-        print("[SWAPFACE-VIDEO] Multi rostro, género y blending avanzado")
-        self.face_mesh = mp.solutions.face_mesh.FaceMesh(static_image_mode=True, max_num_faces=15)
-        self.drawing_utils = mp.solutions.drawing_utils
+        self._available = False
+        try:
+            import cv2
+            import mediapipe as mp
+            import numpy as np
+            from deepface import DeepFace
+            self.cv2 = cv2
+            self.mp = mp
+            self.np = np
+            self.DeepFace = DeepFace
+            self.face_mesh = mp.solutions.face_mesh.FaceMesh(static_image_mode=True, max_num_faces=15)
+            self.drawing_utils = mp.solutions.drawing_utils
+            self._available = True
+            print("[SWAPFACE-VIDEO] Multi rostro, genero y blending avanzado")
+        except Exception as e:
+            print(f"[SWAPFACE-VIDEO] Dependencias no disponibles: {e}")
         self.hombres_faces = []
         self.mujeres_faces = []
 

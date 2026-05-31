@@ -1,32 +1,3 @@
-# == AUTOLOADED MODULES START ==
-from modules.ai_backends import *
-from modules.app_module import *
-from modules.automation_module import *
-from modules.context_location_proximity_identity_detector_v2 import *
-from modules.context_video_vs_real_detector import *
-from modules.criminal_behavior_patterns import *
-from modules.device_analyzer_module import *
-from modules.enhance_module import *
-from modules.extortion_analyzer import *
-from modules.face_recognition_module import *
-from modules.fraud_detection_module import *
-from modules.identity_spoofing_detector import *
-from modules.interaction_module import *
-from modules.knowledge_engine import *
-from modules.learning_module import *
-from modules.media_module import *
-from modules.memory_module import *
-from modules.optimizer_module import *
-from modules.render_module import *
-from modules.secure_communication import *
-from modules.swapface_module import *
-from modules.swapface_video_gender_blend import *
-from modules.system_module import *
-from modules.threat_analyzer import *
-from modules.voice_module import *
-from modules.webremote_module import *
-# == AUTOLOADED MODULES END ==
-
 ## === AUTOIMPORTS/REGISTRO AUTOMÁTICO DE MÓDULOS ===
 import os
 import sys
@@ -162,6 +133,22 @@ knowledge_engine_module = loader.load_module(
 )
 
 # ==========================================
+# AUTO-LOADER: carga módulos no explícitos
+# ==========================================
+
+try:
+    from modules._registry import AUTO_MODULES
+    _explicitly_loaded = set(loaded_modules.keys())
+    for _mod_name in AUTO_MODULES:
+        _safe_name = _mod_name.replace("_module", "").replace("_", "")
+        if _safe_name not in _explicitly_loaded and _mod_name not in _explicitly_loaded:
+            _mod = loader.load_module(f"modules.{_mod_name}")
+            if _mod:
+                loaded_modules[_mod_name] = _mod
+except Exception:
+    pass
+
+# ==========================================
 # MODULE STATUS
 # ==========================================
 
@@ -196,8 +183,24 @@ for module_name, module_data in loaded_modules.items():
         )
 
 # ==========================================
+# DETECTAR PLATAFORMA
+# ==========================================
+
+_detector = None
+try:
+    from plat.detector import PlatformDetector
+    _detector = PlatformDetector()
+    plat_info = _detector.get_info()
+    logger.info(f"Plataforma detectada: {_detector.friendly_name}")
+    logger.info(f"Características: {', '.join(_detector.get_available_features())}")
+except Exception as e:
+    logger.warning(f"No se pudo detectar plataforma: {e}")
+
+# ==========================================
 # BOOT SCREEN
 # ==========================================
+
+_plat_name = _detector.friendly_name if _detector else "Desconocida"
 
 print("""
 
@@ -215,7 +218,7 @@ print("""
 
 =========================================
 
-""".format(plat=_detector.friendly_name))
+""".format(plat=_plat_name))
 
 # ==========================================
 # INICIAR MOTOR DE CONOCIMIENTO
@@ -233,20 +236,6 @@ if knowledge_engine_module:
         logger.warning(f"No se pudo iniciar motor de conocimiento: {e}")
 
 logger.info("Jarvis iniciado correctamente.")
-
-# ==========================================
-# DETECTAR PLATAFORMA
-# ==========================================
-
-_detector = None
-try:
-    from plat.detector import PlatformDetector
-    _detector = PlatformDetector()
-    plat_info = _detector.get_info()
-    logger.info(f"Plataforma detectada: {_detector.friendly_name}")
-    logger.info(f"Características: {', '.join(_detector.get_available_features())}")
-except Exception as e:
-    logger.warning(f"No se pudo detectar plataforma: {e}")
 
 # ==========================================
 # INICIAR MÓDULO DE APRENDIZAJE

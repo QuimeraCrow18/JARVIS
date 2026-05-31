@@ -4,13 +4,16 @@
 # ============================================
 
 import os
-import cv2
 
 
 class EnhanceModule:
 
     def __init__(self):
         print("[ENHANCE] Modulo cargado")
+
+    def _cv2(self):
+        import cv2
+        return cv2
 
     # ============================================
     # MEJORAR CALIDAD
@@ -21,14 +24,14 @@ class EnhanceModule:
             print("[ERROR] Imagen no encontrada")
             return None
 
-        image = cv2.imread(image_path)
+        image = self._cv2().imread(image_path)
 
         if image is None:
             print("[ERROR] No se pudo abrir la imagen")
             return None
 
         # Reducir ruido
-        image = cv2.fastNlMeansDenoisingColored(
+        image = self._cv2().fastNlMeansDenoisingColored(
             image,
             None,
             10,
@@ -48,13 +51,13 @@ class EnhanceModule:
 
         kernel = np.array(kernel)
 
-        image = cv2.filter2D(image, -1, kernel)
+        image = self._cv2().filter2D(image, -1, kernel)
 
         output_path = "output/enhanced_image.jpg"
 
         os.makedirs("output", exist_ok=True)
 
-        cv2.imwrite(output_path, image)
+        self._cv2().imwrite(output_path, image)
 
         print(f"[ENHANCE] Imagen guardada: {output_path}")
 
@@ -69,7 +72,7 @@ class EnhanceModule:
             print("[ERROR] Imagen no encontrada")
             return None
 
-        image = cv2.imread(image_path)
+        image = self._cv2().imread(image_path)
 
         if image is None:
             print("[ERROR] No se pudo abrir la imagen")
@@ -77,17 +80,17 @@ class EnhanceModule:
 
         height, width = image.shape[:2]
 
-        upscale = cv2.resize(
+        upscale = self._cv2().resize(
             image,
             (width * 2, height * 2),
-            interpolation=cv2.INTER_CUBIC
+            interpolation=self._cv2().INTER_CUBIC
         )
 
         output_path = "output/upscale_4k.jpg"
 
         os.makedirs("output", exist_ok=True)
 
-        cv2.imwrite(output_path, upscale)
+        self._cv2().imwrite(output_path, upscale)
 
         print(f"[UPSCALE] Imagen 4K guardada: {output_path}")
 
@@ -102,27 +105,27 @@ class EnhanceModule:
             print("[ERROR] Imagen no encontrada")
             return None
 
-        image = cv2.imread(image_path)
+        image = self._cv2().imread(image_path)
 
         if image is None:
             print("[ERROR] No se pudo abrir la imagen")
             return None
 
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = self._cv2().cvtColor(image, self._cv2().COLOR_BGR2HSV)
 
-        h, s, v = cv2.split(hsv)
+        h, s, v = self._cv2().split(hsv)
 
-        v = cv2.equalizeHist(v)
+        v = self._cv2().equalizeHist(v)
 
-        hsv = cv2.merge((h, s, v))
+        hsv = self._cv2().merge((h, s, v))
 
-        result = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+        result = self._cv2().cvtColor(hsv, self._cv2().COLOR_HSV2BGR)
 
         output_path = "output/light_fix.jpg"
 
         os.makedirs("output", exist_ok=True)
 
-        cv2.imwrite(output_path, result)
+        self._cv2().imwrite(output_path, result)
 
         print(f"[LIGHT] Imagen mejorada: {output_path}")
 
