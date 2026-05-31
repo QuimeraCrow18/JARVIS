@@ -191,6 +191,40 @@ class WebRemoteModule:
             avail = refs["knowledge"].get_available_ai_backends()
             return jsonify(avail)
 
+        @app.route("/api/code/detect", methods=["POST"])
+        def api_code_detect():
+            if "code_analyzer" not in refs:
+                return jsonify({"error": "no disponible"}), 503
+            data = request.get_json(silent=True) or {}
+            codigo = data.get("code", "")
+            if not codigo:
+                return jsonify({"error": "code requerido"}), 400
+            lang = refs["code_analyzer"].detectar_lenguaje(codigo)
+            return jsonify({"lenguaje": lang})
+
+        @app.route("/api/code/analyze", methods=["POST"])
+        def api_code_analyze():
+            if "code_analyzer" not in refs:
+                return jsonify({"error": "no disponible"}), 503
+            data = request.get_json(silent=True) or {}
+            codigo = data.get("code", "")
+            if not codigo:
+                return jsonify({"error": "code requerido"}), 400
+            res = refs["code_analyzer"].analizar(codigo)
+            return jsonify(res)
+
+        @app.route("/api/code/explain", methods=["POST"])
+        def api_code_explain():
+            if "code_analyzer" not in refs:
+                return jsonify({"error": "no disponible"}), 503
+            data = request.get_json(silent=True) or {}
+            codigo = data.get("code", "")
+            nivel = data.get("level", "simple")
+            if not codigo:
+                return jsonify({"error": "code requerido"}), 400
+            res = refs["code_analyzer"].explicar(codigo, nivel=nivel)
+            return jsonify(res)
+
         def run():
             app.run(host=self.host, port=self.port, debug=False, use_reloader=False)
 
@@ -372,6 +406,52 @@ class WebRemoteModule:
                             self._send_json(refs["knowledge"].search_by_topic(topic))
                         else:
                             self._send_json(refs["knowledge"].search_by_source(data.get("source", "")))
+
+                elif parsed.path == "/api/code/detect":
+                    if "code_analyzer" not in refs:
+                        self._send_json({"error": "no disponible"}, 503)
+                    else:
+                        try:
+                            data = json.loads(body)
+                        except json.JSONDecodeError:
+                            data = {}
+                        codigo = data.get("code", "")
+                        if codigo:
+                            lang = refs["code_analyzer"].detectar_lenguaje(codigo)
+                            self._send_json({"lenguaje": lang})
+                        else:
+                            self._send_json({"error": "code requerido"}, 400)
+
+                elif parsed.path == "/api/code/analyze":
+                    if "code_analyzer" not in refs:
+                        self._send_json({"error": "no disponible"}, 503)
+                    else:
+                        try:
+                            data = json.loads(body)
+                        except json.JSONDecodeError:
+                            data = {}
+                        codigo = data.get("code", "")
+                        if codigo:
+                            res = refs["code_analyzer"].analizar(codigo)
+                            self._send_json(res)
+                        else:
+                            self._send_json({"error": "code requerido"}, 400)
+
+                elif parsed.path == "/api/code/explain":
+                    if "code_analyzer" not in refs:
+                        self._send_json({"error": "no disponible"}, 503)
+                    else:
+                        try:
+                            data = json.loads(body)
+                        except json.JSONDecodeError:
+                            data = {}
+                        codigo = data.get("code", "")
+                        nivel = data.get("level", "simple")
+                        if codigo:
+                            res = refs["code_analyzer"].explicar(codigo, nivel=nivel)
+                            self._send_json(res)
+                        else:
+                            self._send_json({"error": "code requerido"}, 400)
 
                 else:
                     self._send_json({"error": "not found"}, 404)

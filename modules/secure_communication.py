@@ -4,10 +4,6 @@
 # modules/secure_communication.py
 # ==========================================
 
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
-from cryptography.hazmat.backends import default_backend
 import os
 import json
 import base64
@@ -15,6 +11,19 @@ from core.utils import safe_method
 
 class SecureMessenger:
     def __init__(self, device_id=None):
+        self._crypto_available = False
+        try:
+            from cryptography.fernet import Fernet
+            from cryptography.hazmat.primitives import hashes
+            from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+            from cryptography.hazmat.backends import default_backend
+            self.Fernet = Fernet
+            self.hashes = hashes
+            self.PBKDF2 = PBKDF2
+            self.default_backend = default_backend
+            self._crypto_available = True
+        except Exception as e:
+            print(f"[SECURE-COMM] Criptografía no disponible: {e}")
         print("[SECURE-COMM] Sistema de comunicación segura iniciado.")
         self.device_id = device_id or self._generate_device_id()
         self.cipher = None
@@ -27,34 +36,27 @@ class SecureMessenger:
     
     @safe_method
     def setup_encryption_key(self, password):
-        """
-        Configura la clave de cifrado basada en contraseña
-        """
-        # Genera salt único
-        salt = b'jarvis_threat_alert_2026'  # En producción, usar random
-        
-        # Deriva clave de contraseña
-        kdf = PBKDF2(
-            algorithm=hashes.SHA256(),
+        if not self._crypto_available:
+            print("[SECURE-COMM] Criptografía no disponible")
+            return False
+        salt = b'jarvis_threat_alert_2026'
+        kdf = self.PBKDF2(
+            algorithm=self.hashes.SHA256(),
             length=32,
             salt=salt,
             iterations=100000,
-            backend=default_backend()
+            backend=self.default_backend()
         )
         key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
-        self.cipher = Fernet(key)
+        self.cipher = self.Fernet(key)
         print("[SECURE-COMM] Clave de cifrado configurada.")
         return True
 
     @safe_method
     def encrypt_message(self, message, recipient_key=None):
-        """
-        Cifra un mensaje para enviar a otro dispositivo
-        """
-        if not self.cipher:
-            print("[SECURE-COMM] Error: Cifrado no configurado")
+        if not self._crypto_available or not self.cipher:
+            print("[SECURE-COMM] Error: Cifrado no disponible")
             return None
-        
         message_json = json.dumps(message)
         encrypted = self.cipher.encrypt(message_json.encode())
         
@@ -67,11 +69,8 @@ class SecureMessenger:
 
     @safe_method
     def decrypt_message(self, encrypted_data):
-        """
-        Descifra un mensaje recibido
-        """
-        if not self.cipher:
-            print("[SECURE-COMM] Error: Cifrado no configurado")
+        if not self._crypto_available or not self.cipher:
+            print("[SECURE-COMM] Error: Cifrado no disponible")
             return None
         
         try:

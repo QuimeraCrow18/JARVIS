@@ -132,6 +132,10 @@ knowledge_engine_module = loader.load_module(
     "modules.knowledge_engine"
 )
 
+code_analyzer_module = loader.load_module(
+    "modules.code_analyzer"
+)
+
 # ==========================================
 # AUTO-LOADER: carga módulos no explícitos
 # ==========================================
@@ -163,7 +167,8 @@ loaded_modules = {
     "face_recognition": face_recognition_module,
     "learning": learning_module,
     "webremote": webremote_module,
-    "knowledge": knowledge_engine_module
+    "knowledge": knowledge_engine_module,
+    "code_analyzer": code_analyzer_module
 }
 
 logger.info("Verificando módulos cargados...")
@@ -235,6 +240,21 @@ if knowledge_engine_module:
     except Exception as e:
         logger.warning(f"No se pudo iniciar motor de conocimiento: {e}")
 
+# ==========================================
+# INICIAR ANALIZADOR DE CÓDIGO
+# ==========================================
+
+_code_analyzer = None
+if code_analyzer_module:
+    try:
+        _code_analyzer = code_analyzer_module.CodeAnalyzer(
+            knowledge_engine=_knowledge,
+            ai_manager=_knowledge._ai_manager if _knowledge else None
+        )
+        logger.info("Analizador de codigo multilenguaje iniciado.")
+    except Exception as e:
+        logger.warning(f"No se pudo iniciar analizador de codigo: {e}")
+
 logger.info("Jarvis iniciado correctamente.")
 
 # ==========================================
@@ -274,6 +294,7 @@ if webremote_module and _detector:
             "detector": _detector,
             "brain": jarvis_brain,
             "knowledge": _knowledge,
+            "code_analyzer": _code_analyzer,
             "processor": lambda cmd: _process_web_command(cmd, loaded_modules, jarvis_brain)
         }
         _web_server.register_jarvis(**jarvis_refs)
@@ -726,6 +747,138 @@ while True:
                     print(f"  {name}: {status}")
                 if not all_b:
                     print("  (no se encontraron backends)")
+
+        # ==================================
+        # ANALIZAR CÓDIGO
+        # ==================================
+
+        elif command.lower().startswith("analiza codigo") or command.lower().startswith("analiza"):
+
+            if not _code_analyzer:
+                print("Analizador de codigo no disponible.")
+            else:
+                text = command.split(None, 1)
+                if len(text) >= 2:
+                    codigo = text[1]
+                    res = _code_analyzer.analizar(codigo)
+                    if res.get("error"):
+                        print(f"Error: {res['error']}")
+                    else:
+                        print(f"\n--- Analisis de codigo ({res['lenguaje']}) ---")
+                        print(f"  Lineas: {res['lineas']}")
+                        print(f"  Funciones: {res['total_funciones']}")
+                        print(f"  Clases: {res['total_clases']}")
+                        print(f"  Imports: {res['total_imports']}")
+                        if res['funciones']:
+                            print(f"\n  Funciones detectadas:")
+                            for fn in res['funciones'][:10]:
+                                print(f"    - {fn['nombre']} (linea {fn.get('linea', '?')})")
+                        if res['clases']:
+                            print(f"\n  Clases detectadas:")
+                            for cls in res['clases'][:10]:
+                                print(f"    - {cls['nombre']} (linea {cls.get('linea', '?')})")
+                else:
+                    print("Uso: analiza <codigo>")
+
+        # ==================================
+        # TRADUCIR CÓDIGO
+        # ==================================
+
+        elif command.lower().startswith("traduce"):
+
+            if not _code_analyzer:
+                print("Analizador de codigo no disponible.")
+            else:
+                parts = command.split(None, 2)
+                if len(parts) >= 3:
+                    destino = parts[1].lower()
+                    codigo = parts[2]
+                    origen = _code_analyzer.detectar_lenguaje(codigo)
+                    print(f"Detectado: {origen} -> {destino}")
+                    res = _code_analyzer.traducir(codigo, origen=origen, destino=destino)
+                    if res.get("ok"):
+                        print(f"\n--- Codigo {destino.upper()} ---")
+                        print(res['codigo'])
+                    else:
+                        print("No se pudo traducir (prueba con IA disponible)")
+                else:
+                    print("Uso: traduce <destino> <codigo>")
+                    print("Ej: traduce javascript 'def hola(): print(1)'")
+
+        # ==================================
+        # EXPLICAR CÓDIGO
+        # ==================================
+
+        elif command.lower().startswith("explica"):
+
+            if not _code_analyzer:
+                print("Analizador de codigo no disponible.")
+            else:
+                text = command.split(None, 1)
+                if len(text) >= 2:
+                    codigo = text[1]
+                    res = _code_analyzer.explicar(codigo)
+                    print(f"\n--- Explicacion ({res['lenguaje']}) ---")
+                    print(res['explicacion'][:800])
+                else:
+                    print("Uso: explica <codigo>")
+
+        # ==================================
+        # GENERAR CÓDIGO
+        # ==================================
+
+        elif command.lower().startswith("genera codigo"):
+
+            if not _code_analyzer:
+                print("Analizador de codigo no disponible.")
+            else:
+                parts = command.split(None, 2)
+                if len(parts) >= 3:
+                    lenguaje = parts[2].lower()
+                    desc = input("Describe el codigo que quieres generar: ")
+                    res = _code_analyzer.generar_codigo(desc, lenguaje)
+                    if res.get("ok"):
+                        print(f"\n--- Codigo {lenguaje.upper()} generado ---")
+                        print(res['codigo'])
+                    else:
+                        print(f"Error: {res.get('error', 'No se pudo generar')}")
+                else:
+                    print("Uso: genera codigo <lenguaje>")
+                    print("Te pedire la descripcion a continuacion.")
+
+        # ==================================
+        # INDEXAR CÓDIGO
+        # ==================================
+
+        elif command.lower().startswith("indexa codigo"):
+
+            if not _code_analyzer or not _knowledge:
+                print("Analizador o knowledge no disponible.")
+            else:
+                text = command.split(None, 2)
+                if len(text) >= 2:
+                    codigo = text[1]
+                    ok, msg = _code_analyzer.indexar_en_conocimiento(codigo)
+                    print(msg)
+                else:
+                    print("Uso: indexa codigo <codigo>")
+
+        # ==================================
+        # DETECTAR LENGUAJE
+        # ==================================
+
+        elif command.lower().startswith("que lenguaje es"):
+
+            if not _code_analyzer:
+                print("Analizador de codigo no disponible.")
+            else:
+                text = command.split(None, 3)
+                if len(text) >= 2:
+                    codigo = text[-1]
+                    lang = _code_analyzer.detectar_lenguaje(codigo)
+                    print(f"Lenguaje detectado: {lang}")
+                else:
+                    print("Uso: que lenguaje es <codigo>")
 
         # ==================================
         # COMANDO DESCONOCIDO

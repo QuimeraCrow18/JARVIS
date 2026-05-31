@@ -510,6 +510,7 @@
             <button class="active" data-tab="chat">TERMINAL</button>
             <button data-tab="knowledge">CONOCIMIENTO</button>
             <button data-tab="ai">IA</button>
+            <button data-tab="code">CODIGO</button>
         </div>
         <span id="status-badge" class="offline">DESCONECTADO</span>
     </header>
@@ -597,6 +598,35 @@
                             <button class="btn btn-secondary" id="k-refresh-btn">Actualizar</button>
                         </div>
                         <div id="k-feedback" style="margin-top:6px;font-size:0.75em;color:#446688;font-family:'Consolas',monospace"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CODE -->
+            <div class="tab-content" id="tab-code">
+                <div class="knowledge-grid">
+                    <div class="knowledge-panel">
+                        <h2>Analizar <span class="badge">— detecta lenguaje y estructura</span></h2>
+                        <textarea id="code-input" placeholder="Pega codigo en cualquier lenguaje..." style="min-height:120px"></textarea>
+                        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+                            <button class="btn btn-primary" id="code-detect-btn">Detectar lenguaje</button>
+                            <button class="btn btn-secondary" id="code-analyze-btn">Analizar</button>
+                            <button class="btn btn-purple" id="code-explain-btn">Explicar</button>
+                        </div>
+                        <div id="code-result" class="knowledge-results" style="margin-top:8px;color:#446688;font-size:0.75em"></div>
+                    </div>
+                    <div class="knowledge-panel">
+                        <h2>Lenguajes <span class="badge">— 13 lenguajes soportados</span></h2>
+                        <div class="topic-list" id="lang-list" style="margin-bottom:10px"></div>
+                        <div style="font-size:0.75em;color:#446688;line-height:1.6">
+                            <strong>Comandos CLI:</strong><br>
+                            <code>analiza &lt;codigo&gt;</code> — analiza cualquier codigo<br>
+                            <code>traduce &lt;destino&gt; &lt;codigo&gt;</code> — traduce entre lenguajes<br>
+                            <code>explica &lt;codigo&gt;</code> — explica que hace el codigo<br>
+                            <code>genera codigo &lt;lenguaje&gt;</code> — genera codigo desde descripcion<br>
+                            <code>que lenguaje es &lt;codigo&gt;</code> — detecta el lenguaje<br>
+                            <code>indexa codigo &lt;codigo&gt;</code> — guarda en conocimiento
+                        </div>
                     </div>
                 </div>
             </div>
@@ -867,6 +897,69 @@
         document.getElementById('k-refresh-btn').addEventListener('click', () => {
             loadTopics();
             loadKnowledgeStats();
+        });
+
+        // === CODE ANALYZER ===
+        function loadLangList() {
+            const langs = ['Python','JavaScript','TypeScript','Java','C++','C#','Go','Rust','Ruby','PHP','Swift','Kotlin'];
+            document.getElementById('lang-list').innerHTML = langs.map(l =>
+                `<span class="topic-tag">${l}</span>`
+            ).join('');
+        }
+        loadLangList();
+
+        function codeAPI(endpoint, code, cb) {
+            const resultEl = document.getElementById('code-result');
+            resultEl.innerHTML = '<div style="color:#446688">Procesando...</div>';
+            fetch('/api/code/' + endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            })
+            .then(r => r.json())
+            .then(data => {
+                cb(data, resultEl);
+            })
+            .catch(() => {
+                resultEl.innerHTML = '<div style="color:#664444">Error de conexion</div>';
+            });
+        }
+
+        document.getElementById('code-detect-btn').addEventListener('click', () => {
+            const code = document.getElementById('code-input').value;
+            if (!code) return;
+            codeAPI('detect', code, (data, el) => {
+                el.innerHTML = `<div class="result-item">Lenguaje: <strong>${data.lenguaje || 'desconocido'}</strong></div>`;
+            });
+        });
+
+        document.getElementById('code-analyze-btn').addEventListener('click', () => {
+            const code = document.getElementById('code-input').value;
+            if (!code) return;
+            codeAPI('analyze', code, (data, el) => {
+                if (data.error) { el.innerHTML = `<div style="color:#664444">${data.error}</div>`; return; }
+                let html = `<div class="result-item">
+                    <strong>${data.lenguaje}</strong> · ${data.lineas} lineas ·
+                    ${data.total_funciones} funciones · ${data.total_clases} clases</div>`;
+                if (data.funciones && data.funciones.length) {
+                    html += '<div class="result-item" style="margin-top:4px"><strong>Funciones:</strong> ';
+                    html += data.funciones.map(f => f.nombre).join(', ') + '</div>';
+                }
+                if (data.clases && data.clases.length) {
+                    html += '<div class="result-item" style="margin-top:4px"><strong>Clases:</strong> ';
+                    html += data.clases.map(c => c.nombre).join(', ') + '</div>';
+                }
+                el.innerHTML = html;
+            });
+        });
+
+        document.getElementById('code-explain-btn').addEventListener('click', () => {
+            const code = document.getElementById('code-input').value;
+            if (!code) return;
+            codeAPI('explain', code, (data, el) => {
+                if (data.error) { el.innerHTML = `<div style="color:#664444">${data.error}</div>`; return; }
+                el.innerHTML = `<div class="result-item">${data.explicacion || 'Sin explicacion'}</div>`;
+            });
         });
 
         // === AI BACKENDS ===

@@ -474,3 +474,136 @@ Original error was: DLL load failed while importing _multiarray_umath: Error en 
 [2026-05-31 04:46:10] [INFO] Módulo cargado: modules.learning_module
 [2026-05-31 04:46:10] [INFO] Módulo cargado: modules.enhance_module
 [2026-05-31 04:46:11] [INFO] Módulo cargado: modules.swapface_module
+[2026-05-31 05:02:22] [INFO] Módulo cargado: modules.learning_module
+[2026-05-31 05:02:22] [INFO] Módulo cargado: modules.enhance_module
+[2026-05-31 05:02:22] [INFO] Módulo cargado: modules.swapface_module
+[2026-05-31 05:03:42] [INFO] Módulo cargado: voice.voice
+[2026-05-31 05:03:42] [INFO] Módulo cargado: modules.learning_module
+[2026-05-31 05:03:49] [INFO] Módulo cargado: modules.memory_module
+[2026-05-31 05:03:50] [INFO] Módulo cargado: modules.automation_module
+[2026-05-31 05:03:50] [INFO] Módulo cargado: modules.app_module
+[2026-05-31 05:03:50] [INFO] Módulo cargado: modules.system_module
+[2026-05-31 05:03:51] [INFO] Módulo cargado: modules.device_analyzer_module
+[2026-05-31 05:03:51] [INFO] Módulo cargado: modules.optimizer_module
+[2026-05-31 05:03:51] [INFO] Módulo cargado: modules.interaction_module
+[2026-05-31 05:03:51] [INFO] Módulo cargado: modules.render_module
+[2026-05-31 05:03:51] [ERROR] [modules.secure_communication] No module named 'cryptography'
+[2026-05-31 05:03:51] [ERROR] Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\secure_communication.py", line 7, in <module>
+    from cryptography.fernet import Fernet
+ModuleNotFoundError: No module named 'cryptography'
+
+[2026-05-31 05:03:51] [WARNING] Módulo desactivado: modules.secure_communication
+[2026-05-31 05:03:57] [INFO] Módulo cargado: modules.voice_module
+[2026-05-31 05:03:58] [INFO] Módulo cargado: modules.webremote_module
+[2026-05-31 05:03:58] [INFO] Módulo cargado: modules.knowledge_engine
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.ai_backends
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.enhance_module
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.media_module
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.face_recognition_module
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.swapface_module
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.swapface_video_gender_blend
+[2026-05-31 05:04:08] [ERROR] [modules.fraud_detection_module] No module named 'cryptography'
+[2026-05-31 05:04:08] [ERROR] Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\fraud_detection_module.py", line 7, in <module>
+    from modules.secure_communication import SecureMessenger
+  File "C:\JARVIS\modules\secure_communication.py", line 7, in <module>
+    from cryptography.fernet import Fernet
+ModuleNotFoundError: No module named 'cryptography'
+
+[2026-05-31 05:04:08] [WARNING] Módulo desactivado: modules.fraud_detection_module
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.extortion_analyzer
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.identity_spoofing_detector
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.threat_analyzer
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.criminal_behavior_patterns
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.context_video_vs_real_detector
+[2026-05-31 05:04:08] [INFO] Módulo cargado: modules.context_location_proximity_identity_detector_v2
+[2026-05-31 05:05:15] [INFO] Módulo cargado: voice.voice
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.learning_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.memory_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.automation_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.app_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.system_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.device_analyzer_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.optimizer_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.interaction_module
+[2026-05-31 05:05:15] [INFO] Módulo cargado: modules.render_module
+[2026-05-31 05:05:15] [ERROR] [modules.secure_communication] No module named 'cryptography'
+[2026-05-31 05:05:15] [ERROR] Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\secure_communication.py", line 7, in <module>
+    from cryptography.fernet import Fernet
+ModuleNotFoundError: No module named 'cryptography'
+
+[2026-05-31 05:05:15] [WARNING] Módulo desactivado: modules.secure_communication
+[2026-05-31 05:05:16] [INFO] Módulo cargado: modules.voice_module
+[2026-05-31 05:05:16] [INFO] Módulo cargado: modules.webremote_module
+[2026-05-31 05:05:16] [INFO] Módulo cargado: modules.knowledge_engine
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.ai_backends
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.enhance_module
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.media_module
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.face_recognition_module
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.swapface_module
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.swapface_video_gender_blend
+[2026-05-31 05:05:25] [ERROR] [modules.fraud_detection_module] No module named 'cryptography'
+[2026-05-31 05:05:25] [ERROR] Traceback (most recent call last):
+  File "C:\JARVIS\core\safe_loader.py", line 18, in load_module
+    module = importlib.import_module(module_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alba\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\JARVIS\modules\fraud_detection_module.py", line 7, in <module>
+    from modules.secure_communication import SecureMessenger
+  File "C:\JARVIS\modules\secure_communication.py", line 7, in <module>
+    from cryptography.fernet import Fernet
+ModuleNotFoundError: No module named 'cryptography'
+
+[2026-05-31 05:05:25] [WARNING] Módulo desactivado: modules.fraud_detection_module
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.extortion_analyzer
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.identity_spoofing_detector
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.threat_analyzer
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.criminal_behavior_patterns
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.context_video_vs_real_detector
+[2026-05-31 05:05:25] [INFO] Módulo cargado: modules.context_location_proximity_identity_detector_v2

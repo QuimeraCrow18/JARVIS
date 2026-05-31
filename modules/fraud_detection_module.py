@@ -4,7 +4,6 @@
 # ==========================================
 
 from modules.threat_analyzer import ThreatAnalyzer
-from modules.secure_communication import SecureMessenger
 from core.utils import safe_method
 from datetime import datetime
 import json
@@ -13,10 +12,19 @@ class FraudDetectionModule:
     def __init__(self, device_id=None):
         print("[FRAUD-DETECTION] Módulo de detección de fraude iniciado.")
         self.threat_analyzer = ThreatAnalyzer()
-        self.secure_messenger = SecureMessenger(device_id)
+        self._secure_messenger = None
+        self._device_id = device_id
+        self._init_secure()
         self.call_history = []
         self.blocked_numbers = set()
         self.trusted_contacts = {}
+
+    def _init_secure(self):
+        try:
+            from modules.secure_communication import SecureMessenger
+            self._secure_messenger = SecureMessenger(self._device_id)
+        except Exception as e:
+            print(f"[FRAUD] SecureMessenger no disponible: {e}")
 
     @safe_method
     def initialize_security(self, password):
