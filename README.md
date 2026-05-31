@@ -1,5 +1,30 @@
 # JARVIS - Sistema Inteligente de Protección
 
+> *"Just A Rather Very Intelligent System"*
+
+## Acerca de JARVIS
+
+JARVIS es un asistente inteligente modular multi-plataforma diseñado para protección, automatización y conocimiento. Inspirado en el sistema de inteligencia artificial de Iron Man, JARVIS opera como un núcleo central que integra módulos de seguridad, aprendizaje continuo, procesamiento multimedia y control remoto.
+
+**Filosofía del proyecto:**
+- **Modularidad**: Cada funcionalidad es un módulo independiente que se carga de forma segura
+- **Multi-plataforma**: Funciona en Windows, Linux, macOS, Android (Termux) y Raspberry Pi
+- **Conocimiento sin límites**: Motor de conocimiento que absorbe información de múltiples fuentes sin censura
+- **Privacidad primero**: Detección de fraudes y amenazas sin contactar autoridades automáticamente — solo alertas
+- **Auto-suficiencia**: Auto-reparación de dependencias, auto-sincronización con GitHub
+
+**Capacidades principales:**
+- Asistente por voz y texto
+- Reconocimiento facial y detección de suplantación de identidad
+- Análisis de amenazas y fraudes en tiempo real
+- Face swap y mejora de imágenes con IA
+- Aprendizaje persistente entre sesiones
+- Control remoto vía web desde cualquier dispositivo
+- Motor de conocimiento que absorbe información de URLs, archivos y backends IA
+- Automatización del sistema (aplicaciones, archivos, apagado)
+
+JARVIS es software libre. Construido con Python, customtkinter, OpenCV, DeepFace, Flask y más.
+
 Asistente modular multi-plataforma con interfaz gráfica, procesamiento de medios, detección de fraudes, aprendizaje persistente y control remoto vía web.
 
 ## Características
@@ -138,6 +163,12 @@ python main.py
 | `registrar rostro <img> <nombre>` | Registra un rostro nuevo |
 | `comparar rostros <a> <b>` | Compara dos imágenes |
 | `detectar rostros <imagen>` | Detecta rostros en una imagen |
+| `buscar <consulta>` | Busca en la base de conocimiento local |
+| `aprende de <url>` | Absorbe contenido web en el conocimiento |
+| `temas` | Lista temas disponibles en el conocimiento |
+| `stats conocimiento` | Estadísticas del motor de conocimiento |
+| `ia <pregunta>` | Consulta a todos los backends IA disponibles |
+| `ia backends` | Lista backends IA (Ollama, OpenAI, Anthropic, Gemini) |
 | `modifica rostro` | Face swap (en integración) |
 | `mejora imagen` | Mejora de imagen con IA (en integración) |
 
