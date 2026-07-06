@@ -1,0 +1,107 @@
+{
+    "rutas_volatiles": {
+        "servidor-central-01": {
+            "direccion": "10.0.181.85",
+            "alcance": 4,
+            "activo": true,
+            "ultimo_latido": 1781895720.1183882,
+            "estado": "ACTIVO"
+        },
+        "nodo-encriptado-03": {
+            "direccion": "10.0.162.141",
+            "alcance": 3,
+            "activo": true,
+            "ultimo_latido": 1781895694.1183882,
+            "estado": "ACTIVO"
+        },
+        "gateway-privado": {
+            "direccion": "10.0.206.17",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781895713.1183882,
+            "estado": "ACTIVO"
+        },
+        "core-bunker": {
+            "direccion": "10.0.210.168",
+            "alcance": 4,
+            "activo": true,
+            "ultimo_latido": 1781895749.1183882,
+            "estado": "ACTIVO"
+        },
+        "backup-seguro": {
+            "direccion": "10.0.212.58",
+            "alcance": 3,
+            "activo": true,
+            "ultimo_latido": 1781895745.1183882,
+            "estado": "ACTIVO"
+        },
+        "torre-control": {
+            "direccion": "10.0.227.88",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781895690.1183882,
+            "estado": "ACTIVO"
+        },
+        "celda-aislada-07": {
+            "direccion": "10.0.31.46",
+            "alcance": 4,
+            "activo": true,
+            "ultimo_latido": 1781895732.1183882,
+            "estado": "ACTIVO"
+        },
+        "firewall-interno": {
+            "direccion": "10.0.73.235",
+            "alcance": 4,
+            "activo": true,
+            "ultimo_latido": 1781895747.1183882,
+            "estado": "ACTIVO"
+        },
+        "dmz-nodo": {
+            "direccion": "10.0.201.50",
+            "alcance": 4,
+            "activo": true,
+            "ultimo_latido": 1781895699.1183882,
+            "estado": "ACTIVO"
+        },
+        "cluster-secreto": {
+            "direccion": "10.0.49.178",
+            "alcance": 5,
+            "activo": true,
+            "ultimo_latido": 1781895690.1183882,
+            "estado": "ACTIVO"
+        },
+        "balanceador-02": {
+            "direccion": "10.0.199.13",
+            "alcance": 5,
+            "activo": true,
+            "ultimo_latido": 1781895748.1183882,
+            "estado": "ACTIVO"
+        },
+        "cache-oculta": {
+            "direccion": "10.0.56.208",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781895737.1183882,
+            "estado": "ACTIVO"
+        }
+    },
+    "saltos": {
+        "celda-aislada-07->dmz-nodo": 4,
+        "gateway-privado->firewall-interno": 2,
+        "torre-control->servidor-central-01": 1,
+        "servidor-central-01->firewall-interno": 3,
+        "servidor-central-01->torre-control": 3,
+        "cache-oculta->backup-seguro": 3,
+        "firewall-interno->dmz-nodo": 1,
+        "celda-aislada-07->balanceador-02": 1,
+        "servidor-central-01->celda-aislada-07": 1,
+        "balanceador-02->gateway-privado": 1,
+        "core-bunker->backup-seguro": 2,
+        "cluster-secreto->cache-oculta": 4,
+        "nodo-encriptado-03->torre-control": 4,
+        "cache-oculta->core-bunker": 3,
+        "backup-seguro->torre-control": 2,
+        "nodo-encriptado-03->servidor-central-01": 1,
+        "celda-aislada-07->core-bunker": 4
+    }
+}

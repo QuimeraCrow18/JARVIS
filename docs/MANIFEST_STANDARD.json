@@ -1,0 +1,12 @@
+{
+    "_comentario": "Estandar de manifiesto para modulos JOSAMICK",
+    "module_name": "nombre_del_modulo",
+    "version": "1.0",
+    "type": "josamick_native | legacy_jarvis | bridge",
+    "dependencies": ["lista", "de", "dependencias"],
+    "is_legacy_jarvis": false,
+    "autor": "Jose Crow Munoz",
+    "descripcion": "breve descripcion del modulo",
+    "eventos_escucha": ["evento1", "evento2"],
+    "eventos_emite": ["evento3", "evento4"]
+}

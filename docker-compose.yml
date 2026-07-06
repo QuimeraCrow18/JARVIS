@@ -1,0 +1,125 @@
+version: "3.9"
+
+name: josamick-ecosystem
+
+volumes:
+  josamick_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data
+      o: bind
+
+networks:
+  mesh:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+  public:
+    driver: bridge
+
+services:
+
+  # ─── 1. C2 Gateway — Punto de entrada, firewall ─────
+  c2_gateway:
+    build: ./c2_gateway
+    container_name: josamick-c2
+    ports:
+      - "${C2_PORT:-9090}:9090"
+    env_file: .env
+    environment:
+      - AUTH_ENDPOINT=http://auth:8001
+    volumes:
+      - josamick_data:/app/data
+      - ./data/forensics:/app/data/forensics
+    networks:
+      public:
+        ipv4_address: 172.28.0.2
+      mesh: {}
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    depends_on:
+      auth:
+        condition: service_started
+
+  # ─── 2. Brain Intelligence — Núcleo lógico ──────────
+  brain_intelligence:
+    build: ./brain_intelligence
+    container_name: josamick-brain
+    ports:
+      - "${JOSAMICK_PORT:-5001}:5001"
+    env_file: .env
+    environment:
+      - C2_ENDPOINT=http://c2_gateway:9090
+    volumes:
+      - josamick_data:/app/data
+    networks:
+      mesh:
+        ipv4_address: 172.28.0.3
+    restart: unless-stopped
+    depends_on:
+      c2_gateway:
+        condition: service_started
+
+  # ─── 3. Dashboard UI — Interfaz web centralizada ────
+  dashboard_ui:
+    build: ./dashboard_ui
+    container_name: josamick-ui
+    ports:
+      - "${KEXPLER_PORT:-5002}:5002"
+    env_file: .env
+    environment:
+      - C2_ENDPOINT=http://c2_gateway:9090
+      - AUTH_ENDPOINT=http://auth:8001
+    volumes:
+      - josamick_data:/app/data
+    networks:
+      mesh:
+        ipv4_address: 172.28.0.4
+    restart: unless-stopped
+    depends_on:
+      - c2_gateway
+
+  # ─── 4. Auth Service — Registro e identidad ─────────
+  auth:
+    build: ./auth_service
+    container_name: josamick-auth
+    ports:
+      - "${AUTH_PORT:-8001}:8001"
+    env_file: .env
+    environment:
+      - AUTH_DB_PATH=/app/data/users/auth.db
+      - C2_ENDPOINT=http://c2_gateway:9090
+    volumes:
+      - josamick_data:/app/data
+      - ./data/users:/app/data/users
+    networks:
+      mesh:
+        ipv4_address: 172.28.0.5
+    restart: unless-stopped
+
+  # ─── 5. Email Service — Comunicaciones SMTP ─────────
+  email:
+    build: ./email_service
+    container_name: josamick-email
+    ports:
+      - "${EMAIL_PORT:-8002}:8002"
+    env_file: .env
+    environment:
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.brevo.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - FROM_EMAIL=${FROM_EMAIL:-notificaciones@kexpler.com}
+      - FROM_NAME=${FROM_NAME:-Kexpler Network}
+      - MAIL_LOG_DIR=/app/data/mail_logs
+    volumes:
+      - josamick_data:/app/data
+      - ./data/mail_logs:/app/data/mail_logs
+    networks:
+      mesh:
+        ipv4_address: 172.28.0.6
+    restart: unless-stopped

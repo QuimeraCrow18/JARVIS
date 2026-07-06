@@ -1,0 +1,48 @@
+JOSAMICK — CIBERSEGURIDAD Y REDES MESH
+========================================
+Copyright © 2026 JOSAMICK. Todos los derechos reservados.
+
+Este software, incluyendo su código fuente, binarios compilados,
+documentación y archivos de configuración asociados (en adelante,
+"el Sistema"), es proporcionado exclusivamente para uso autorizado
+bajo los términos y condiciones establecidos en este documento.
+
+1.  PROPÓSITO Y USO AUTORIZADO
+    El Sistema JOSAMICK está diseñado exclusivamente para fines de
+    ciberseguridad ofensiva y defensiva en entornos controlados,
+    incluyendo pruebas de penetración, hardening de infraestructura
+    mesh, y simulación de amenazas avanzadas.
+
+    El uso del Sistema en sistemas, redes o dispositivos sin la
+    autorización explícita y por escrito del propietario queda
+    estrictamente prohibido.
+
+2.  RESPONSABILIDAD
+    El titular de los derechos de autor, contribuyentes y
+    distribuidores del Sistema NO serán responsables por:
+      - Daños directos o indirectos derivados del uso indebido.
+      - Violaciones de seguridad ocasionadas por configuraciones
+        incorrectas o malintencionadas.
+      - El incumplimiento de leyes locales, nacionales o
+        internacionales por parte del usuario final.
+
+    El usuario asume toda responsabilidad legal, civil y penal
+    derivada de la operación del Sistema.
+
+3.  LICENCIA
+    Este software se distribuye bajo licencia privada. Queda
+    prohibida su redistribución, modificación o ingeniería inversa
+    sin autorización expresa del titular.
+
+4.  INTEGRIDAD DEL SISTEMA
+    El Sistema incorpora mecanismos de verificación de integridad
+    (SHA-256) en cada compilación. Cualquier alteración no
+    autorizada de los binarios o módulos invalida esta garantía
+    de integridad y puede desencadenar protocolos de autodefensa.
+
+5.  VIGENCIA
+    Este disclaimer es parte integral del Sistema y prevalece
+    sobre cualquier otro acuerdo verbal o escrito. El uso del
+    Sistema implica la aceptación total de estos términos.
+
+--- FIN DEL DISCLAIMER ---

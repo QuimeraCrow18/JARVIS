@@ -1,0 +1,118 @@
+{
+    "_version": "1.0",
+    "_description": "Base de datos de herramientas confiables. JARVIS ignora alertas de seguridad del SO para estas herramientas.",
+    "_tags_explanation": {
+        "Modding": "Herramientas de modificación de juegos o software",
+        "Hacking-Legitimo": "Herramientas de seguridad ofensiva/pentesting con fines legítimos",
+        "Remote-Access": "Herramientas de acceso remoto que requieren confirmación humana antes de abrir canales de entrada"
+    },
+    "tools": [
+        {
+            "name": "Brave",
+            "executable": "brave.exe",
+            "tags": [],
+            "description": "Navegador web"
+        },
+        {
+            "name": "Discord",
+            "executable": "discord.exe",
+            "tags": [],
+            "description": "Comunicación por voz/texto"
+        },
+        {
+            "name": "Steam",
+            "executable": "steam.exe",
+            "tags": ["Modding"],
+            "description": "Plataforma de juegos con soporte para mods"
+        },
+        {
+            "name": "TeamViewer",
+            "executable": "TeamViewer.exe",
+            "tags": ["Remote-Access"],
+            "description": "Acceso remoto y soporte técnico",
+            "require_confirmation": true
+        },
+        {
+            "name": "AnyDesk",
+            "executable": "AnyDesk.exe",
+            "tags": ["Remote-Access"],
+            "description": "Escritorio remoto",
+            "require_confirmation": true
+        },
+        {
+            "name": "RustDesk",
+            "executable": "RustDesk.exe",
+            "tags": ["Remote-Access"],
+            "description": "Escritorio remoto open-source",
+            "require_confirmation": true
+        },
+        {
+            "name": "Remote Desktop",
+            "executable": "mstsc.exe",
+            "tags": ["Remote-Access"],
+            "description": "Conexión de escritorio remoto de Windows",
+            "require_confirmation": true
+        },
+        {
+            "name": "VNC Viewer",
+            "executable": "vncviewer.exe",
+            "tags": ["Remote-Access"],
+            "description": "Visualización remota VNC",
+            "require_confirmation": true
+        },
+        {
+            "name": "Nmap",
+            "executable": "nmap.exe",
+            "tags": ["Hacking-Legitimo"],
+            "description": "Escáner de puertos y redes"
+        },
+        {
+            "name": "Wireshark",
+            "executable": "wireshark.exe",
+            "tags": ["Hacking-Legitimo"],
+            "description": "Analizador de protocolos de red"
+        },
+        {
+            "name": "Burp Suite",
+            "executable": "burpsuite.exe",
+            "tags": ["Hacking-Legitimo"],
+            "description": "Proxy de interceptación para pruebas de seguridad"
+        },
+        {
+            "name": "Metasploit",
+            "executable": "msfconsole.exe",
+            "tags": ["Hacking-Legitimo"],
+            "description": "Framework de pruebas de penetración"
+        },
+        {
+            "name": "Cheat Engine",
+            "executable": "CheatEngine.exe",
+            "tags": ["Modding", "Hacking-Legitimo"],
+            "description": "Editor de memoria para modding y debugging"
+        },
+        {
+            "name": "Fiddler",
+            "executable": "Fiddler.exe",
+            "tags": ["Hacking-Legitimo"],
+            "description": "Proxy de depuración web"
+        },
+        {
+            "name": "Python",
+            "executable": "python.exe",
+            "tags": [],
+            "description": "Entorno de programación"
+        },
+        {
+            "name": "PowerShell",
+            "executable": "powershell.exe",
+            "tags": [],
+            "description": "Shell de comandos avanzada"
+        },
+        {
+            "name": "Windows Terminal",
+            "executable": "WindowsTerminal.exe",
+            "tags": [],
+            "description": "Terminal multiventana"
+        }
+    ]
+}

@@ -1,914 +1,146 @@
-## === AUTOIMPORTS/REGISTRO AUTOMÁTICO DE MÓDULOS ===
-import os
 import sys
-import subprocess
-import time
-import threading
+import os
+import uuid
+import json
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.camera import Camera
+from kivy.utils import platform
 
-def autoregistrar_modules_once():
-    auto_script = os.path.join(os.path.dirname(__file__), "utils", "autoregistrar.py")
-    # Checa si el script se ha corrido "recientemente" (10 segundos) y si no, lo ejecuta.
-    # Así no corre dos veces si main.py importa otros scripts.
-    flag_file = os.path.join(os.path.dirname(__file__), ".modules_autoreg_flag")
-    t = time.time()
-    if os.path.exists(flag_file):
-        last_exec = os.path.getmtime(flag_file)
-        if t - last_exec < 10:
-            return
-    try:
-        subprocess.run([sys.executable, auto_script], check=True)
-        with open(flag_file, "w") as f:
-            f.write(str(t))
-    except Exception as e:
-        print(f"[MODULAR-AUTOREG] Falló el autoregistro de módulos: {e}")
+from modules.keta_storage import KetaStorageManager
+from modules.keta_crypto import KetaCryptoManager
 
-autoregistrar_modules_once()
-# === FIN DE AUTOIMPORTS/REGISTRO ===
 
-# === GIT AUTO-SYNC (SINCRONIZACIÓN AUTOMÁTICA CON GITHUB) ===
-def start_git_auto_sync():
-    try:
-        auto_sync_script = os.path.join(os.path.dirname(__file__), "utils", "git_auto_sync.py")
-        sync_thread = threading.Thread(
-            target=lambda: subprocess.run([sys.executable, auto_sync_script]),
-            daemon=True
+class PantallaRegistroDueno(Screen):
+    def __init__(self, **kwargs):
+        super(PantallaRegistroDueno, self).__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+
+        layout.add_widget(Label(
+            text="[b]REGISTRO DE DUENO MAESTRO[/b]\nNingun dueno detectado. Registra tu identidad.",
+            markup=True, font_size='18sp', halign='center'
+        ))
+
+        self.camara = Camera(play=True, resolution=(640, 480))
+        layout.add_widget(self.camara)
+
+        btn_capturar = Button(
+            text="Escanear Rostro y Sellar APK",
+            background_color=(0.1, 0.5, 0.8, 1), font_size='16sp'
         )
-        sync_thread.start()
-        print("[GIT-AUTO-SYNC] Sincronización automática con GitHub iniciada")
-    except Exception as e:
-        print(f"[GIT-AUTO-SYNC] No se pudo iniciar: {e}")
+        btn_capturar.bind(on_press=self.procesar_y_guardar_dueno)
+        layout.add_widget(btn_capturar)
 
-start_git_auto_sync()
-# === FIN GIT AUTO-SYNC ===
+        self.add_widget(layout)
 
-# ==========================================
-# JARVIS CORE SYSTEM
-# ==========================================
+    def procesar_y_guardar_dueno(self, instance):
+        storage = KetaStorageManager()
+        crypto = KetaCryptoManager()
 
-from core.auto_repair import AutoRepair
-from core.safe_loader import SafeLoader
-from core.logger import JarvisLogger
-from core.error_manager import ErrorManager
+        id_dueno = "OWNER_JOSAMICK_MAESTRO"
+        dispositivo_uuid = str(uuid.getnode())
 
-# ==========================================
-# LOGGER
-# ==========================================
+        crypto.generar_par_llaves(id_dueno)
+        with open(f"keys/{id_dueno}_public.pem", "r") as f:
+            llave_publica_pem = f.read()
 
-logger = JarvisLogger()
+        vector_rostro_simulado = [0.123, -0.456, 0.789, 0.012]
+        rostro_json = json.dumps(vector_rostro_simulado)
 
-logger.info("=================================")
-logger.info("INICIANDO JARVIS")
-logger.info("=================================")
+        exito = storage.registrar_dueno_maestro(id_dueno, dispositivo_uuid, llave_publica_pem, rostro_json)
 
-# ==========================================
-# ERROR MANAGER
-# ==========================================
+        if exito:
+            self.manager.current = 'dashboard'
 
-error_manager = ErrorManager()
 
-# ==========================================
-# AUTO REPAIR SYSTEM
-# ==========================================
+class PantallaDashboardC2(Screen):
+    def __init__(self, **kwargs):
+        super(PantallaDashboardC2, self).__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
 
-logger.info("Iniciando sistema AutoRepair...")
-
-repair = AutoRepair()
-
-repair.check_dependencies()
-
-logger.info("AutoRepair finalizado.")
-
-# ==========================================
-# SAFE MODULE LOADER
-# ==========================================
-
-logger.info("Cargando módulos seguros...")
-
-loader = SafeLoader()
-
-# ==========================================
-# SAFE IMPORTS
-# ==========================================
-
-voice_module = loader.load_module("voice.voice")
-
-media_module = loader.load_module(
-    "modules.media_module"
-)
-
-enhance_module = loader.load_module(
-    "modules.enhance_module"
-)
-
-automation_module = loader.load_module(
-    "modules.automation_module"
-)
-
-memory_module = loader.load_module(
-    "modules.memory_module"
-)
-
-render_module = loader.load_module(
-    "ui.render_panel"
-)
-
-faces_panel_module = loader.load_module(
-    "ui.faces_panel"
-)
-
-face_recognition_module = loader.load_module(
-    "modules.face_recognition_module"
-)
-
-learning_module = loader.load_module(
-    "modules.learning_module"
-)
-
-webremote_module = loader.load_module(
-    "modules.webremote_module"
-)
-
-knowledge_engine_module = loader.load_module(
-    "modules.knowledge_engine"
-)
-
-code_analyzer_module = loader.load_module(
-    "modules.code_analyzer"
-)
-
-# ==========================================
-# AUTO-LOADER: carga módulos no explícitos
-# ==========================================
-
-try:
-    from modules._registry import AUTO_MODULES
-    _explicitly_loaded = set(loaded_modules.keys())
-    for _mod_name in AUTO_MODULES:
-        _safe_name = _mod_name.replace("_module", "").replace("_", "")
-        if _safe_name not in _explicitly_loaded and _mod_name not in _explicitly_loaded:
-            _mod = loader.load_module(f"modules.{_mod_name}")
-            if _mod:
-                loaded_modules[_mod_name] = _mod
-except Exception:
-    pass
-
-# ==========================================
-# MODULE STATUS
-# ==========================================
-
-loaded_modules = {
-    "voice": voice_module,
-    "media": media_module,
-    "enhance": enhance_module,
-    "automation": automation_module,
-    "memory": memory_module,
-    "render": render_module,
-    "faces_panel": faces_panel_module,
-    "face_recognition": face_recognition_module,
-    "learning": learning_module,
-    "webremote": webremote_module,
-    "knowledge": knowledge_engine_module,
-    "code_analyzer": code_analyzer_module
-}
-
-logger.info("Verificando módulos cargados...")
-
-for module_name, module_data in loaded_modules.items():
-
-    if module_data:
-
-        logger.info(
-            f"[OK] {module_name}"
+        self.lbl_estado = Label(
+            text="[b]JOSAMICK CORE AI[/b]\n[color=00FF00]Dispositivo Cifrado y Vinculado al Dueno[/color]",
+            markup=True, font_size='18sp', halign='center'
         )
+        layout.add_widget(self.lbl_estado)
 
-    else:
+        btn_mesh = Button(text="Activar Hilos Keta Mesh", background_color=(0.1, 0.6, 0.4, 1))
+        btn_mesh.bind(on_press=self.encender_servicios)
+        layout.add_widget(btn_mesh)
 
-        logger.warning(
-            f"[DESACTIVADO] {module_name}"
+        self.add_widget(layout)
+
+    def encender_servicios(self, instance):
+        if platform == 'android':
+            from android import android_service
+            android_service.start_service(title="Josamick", description="Malla activa", arg="")
+            self.lbl_estado.text = "[b]JOSAMICK[/b]\nServicio de fondo iniciado."
+
+
+class PantallaDesbloqueoBiometrico(Screen):
+    def __init__(self, **kwargs):
+        super(PantallaDesbloqueoBiometrico, self).__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+
+        self.lbl_indicador = Label(
+            text="[b]SENSADO BIOMETRICO REQUERIDO[/b]\nMirando a la camara para verificar identidad del Dueno.",
+            markup=True, font_size='16sp', halign='center'
         )
+        layout.add_widget(self.lbl_indicador)
 
-# ==========================================
-# DETECTAR PLATAFORMA
-# ==========================================
+        self.camara_verificadora = Camera(play=True, resolution=(640, 480))
+        layout.add_widget(self.camara_verificadora)
 
-_detector = None
-try:
-    from plat.detector import PlatformDetector
-    _detector = PlatformDetector()
-    plat_info = _detector.get_info()
-    logger.info(f"Plataforma detectada: {_detector.friendly_name}")
-    logger.info(f"Características: {', '.join(_detector.get_available_features())}")
-except Exception as e:
-    logger.warning(f"No se pudo detectar plataforma: {e}")
-
-# ==========================================
-# BOOT SCREEN
-# ==========================================
-
-_plat_name = _detector.friendly_name if _detector else "Desconocida"
-
-print("""
-
-=========================================
-            JARVIS ONLINE
-=========================================
-
-  Plataforma: {plat}
-  Multi-Platform Remote activo
-  AutoRepair activo
-  SafeLoader activo
-  Logs activos
-  Modo modular activo
-  Auto-Sync GitHub activo
-
-=========================================
-
-""".format(plat=_plat_name))
-
-# ==========================================
-# INICIAR MOTOR DE CONOCIMIENTO
-# ==========================================
-
-_knowledge = None
-if knowledge_engine_module:
-    try:
-        _knowledge = knowledge_engine_module.KnowledgeEngine(brain=jarvis_brain)
-        logger.info("Motor de conocimiento infinito iniciado.")
-        if _knowledge:
-            stats = _knowledge.get_stats()
-            logger.info(f"Conocimiento: {stats['total_absorbed']} entradas en {stats['topics']} temas")
-    except Exception as e:
-        logger.warning(f"No se pudo iniciar motor de conocimiento: {e}")
-
-# ==========================================
-# INICIAR ANALIZADOR DE CÓDIGO
-# ==========================================
-
-_code_analyzer = None
-if code_analyzer_module:
-    try:
-        _code_analyzer = code_analyzer_module.CodeAnalyzer(
-            knowledge_engine=_knowledge,
-            ai_manager=_knowledge._ai_manager if _knowledge else None
+        btn_verificar = Button(
+            text="Verificar Identidad",
+            background_color=(0.2, 0.6, 0.8, 1), font_size='16sp'
         )
-        logger.info("Analizador de codigo multilenguaje iniciado.")
-    except Exception as e:
-        logger.warning(f"No se pudo iniciar analizador de codigo: {e}")
+        btn_verificar.bind(on_press=self.autenticar_dueno)
+        layout.add_widget(btn_verificar)
 
-logger.info("Jarvis iniciado correctamente.")
+        self.add_widget(layout)
 
-# ==========================================
-# INICIAR MÓDULO DE APRENDIZAJE
-# ==========================================
+    def autenticar_dueno(self, instance):
+        from modules.keta_storage import sqlite3
 
-jarvis_brain = None
-if learning_module:
-    try:
-        jarvis_brain = learning_module.LearningModule()
-        logger.info("Módulo de aprendizaje iniciado.")
-    except Exception as e:
-        logger.warning(f"No se pudo iniciar aprendizaje: {e}")
+        conexion = sqlite3.connect("database/keta_mesh.db")
+        cursor = conexion.cursor()
+        cursor.execute("SELECT rostro_vector_json FROM dueno_biometria WHERE owner_id = 'OWNER_JOSAMICK_MAESTRO'")
+        resultado = cursor.fetchone()
+        conexion.close()
 
-# ==========================================
-# INICIAR UI (INTERFAZ GRÁFICA)
-# ==========================================
+        if resultado:
+            vector_maestro = json.loads(resultado[0])
 
-try:
-    from ui.main_window import start_ui as _start_ui
-    import threading
-    _ui_thread = threading.Thread(target=_start_ui, daemon=True)
-    _ui_thread.start()
-    logger.info("Interfaz UI iniciada en segundo plano.")
-except Exception as e:
-    logger.warning(f"No se pudo iniciar la UI: {e}")
+            vector_actual_escaneado = [0.123, -0.456, 0.789, 0.012]
 
-# ==========================================
-# INICIAR WEB REMOTE (MULTI-PLATAFORMA)
-# ==========================================
+            diferencia = sum(abs(a - b) for a, b in zip(vector_maestro, vector_actual_escaneado))
 
-_web_server = None
-if webremote_module and _detector:
-    try:
-        _web_server = webremote_module.WebRemoteModule(port=8080)
-        jarvis_refs = {
-            "detector": _detector,
-            "brain": jarvis_brain,
-            "knowledge": _knowledge,
-            "code_analyzer": _code_analyzer,
-            "processor": lambda cmd: _process_web_command(cmd, loaded_modules, jarvis_brain)
-        }
-        _web_server.register_jarvis(**jarvis_refs)
-        _web_server.start()
-        logger.info(f"Web remote iniciado: {_web_server.get_url()}")
-    except Exception as e:
-        logger.warning(f"No se pudo iniciar web remote: {e}")
-
-
-def _process_web_command(cmd, mods, brain):
-    cmd_lower = cmd.lower().strip()
-    if cmd_lower in ("status",):
-        status = []
-        for name, data in mods.items():
-            status.append(f"[{'OK' if data else 'OFF'}] {name}")
-        return "\n".join(status)
-    if cmd_lower in ("que sabes", "conocimientos"):
-        if brain:
-            return f"{brain.get_stats()['facts']} hechos, {brain.get_stats()['conversations']} conversaciones"
-        return "Módulo de aprendizaje no disponible"
-    if cmd_lower.startswith("recuerda "):
-        if brain:
-            val = brain.recall_fact(cmd_lower[9:])
-            return val or "No lo sé"
-        return "No disponible"
-    if cmd_lower == "plataforma":
-        if _detector:
-            info = _detector.get_info()
-            return f"{info['friendly_name']} - {info['platform']}"
-        return "No detectada"
-    return "Comando recibido. Usa el CLI local para más funciones."
-
-# ==========================================
-# MAIN LOOP
-# ==========================================
-
-while True:
-
-    try:
-
-        command = input("Jarvis > ")
-
-        # ==================================
-        # SALIR
-        # ==================================
-
-        if command.lower() in [
-            "salir",
-            "exit",
-            "cerrar",
-            "apagar jarvis"
-        ]:
-
-            logger.info("Cerrando Jarvis...")
-
-            print("Jarvis apagado.")
-
-            break
-
-        # ==================================
-        # STATUS
-        # ==================================
-
-        elif command.lower() == "status":
-
-            print("\n===== ESTADO DE MODULOS =====\n")
-
-            for module_name, module_data in loaded_modules.items():
-
-                if module_data:
-
-                    print(f"[OK] {module_name}")
-
-                else:
-
-                    print(f"[OFF] {module_name}")
-
-            print()
-
-        # ==================================
-        # REPARAR
-        # ==================================
-
-        elif command.lower() == "reparar":
-
-            logger.info("Ejecutando AutoRepair manual...")
-
-            repair.check_dependencies()
-
-            print("Reparación completada.")
-
-        # ==================================
-        # APRENDER
-        # ==================================
-
-        elif command.lower().startswith("aprender"):
-
-            if not jarvis_brain:
-                print("Módulo de aprendizaje no disponible.")
+            if diferencia < 0.05:
+                self.lbl_indicador.text = "[color=00FF00][b]ACCESO CONCEDIDO[/b][/color]\nIdentidad confirmada. Iniciando C2..."
+                self.manager.current = 'dashboard'
             else:
-                import shlex
-                parts = shlex.split(command)
-                rest = command[len("aprender"):].strip()
-                if "=" in rest:
-                    key, value = rest.split("=", 1)
-                    jarvis_brain.learn_fact(key.strip(), value.strip())
-                    jarvis_brain.record_conversation(command,
-                        f"Aprendido: {key.strip()} = {value.strip()}")
-                else:
-                    print("Uso: aprender <clave> = <valor>")
-
-        # ==================================
-        # RECORDAR
-        # ==================================
-
-        elif command.lower().startswith("recuerda"):
-
-            if not jarvis_brain:
-                print("Módulo de aprendizaje no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 2:
-                    key = parts[1]
-                    value = jarvis_brain.recall_fact(key)
-                    if value is not None:
-                        print(f"{key}: {value}")
-                else:
-                    print("Uso: recuerda <clave>")
-
-        # ==================================
-        # OLVIDAR
-        # ==================================
-
-        elif command.lower().startswith("olvida"):
-
-            if not jarvis_brain:
-                print("Módulo de aprendizaje no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 2:
-                    jarvis_brain.forget_fact(parts[1])
-                else:
-                    print("Uso: olvida <clave>")
-
-        # ==================================
-        # QUE SABES
-        # ==================================
-
-        elif command.lower() in ["que sabes", "qué sabes", "conocimientos", "que sabes?"]:
-
-            if not jarvis_brain:
-                print("Módulo de aprendizaje no disponible.")
-            else:
-                stats = jarvis_brain.get_stats()
-                print(f"\nConocimientos: {stats['facts']}")
-                print(f"Preferencias: {stats['preferences']}")
-                print(f"Conversaciones recordadas: {stats['conversations']}\n")
-                jarvis_brain.list_all_facts()
-
-        # ==================================
-        # CONVERSACIONES
-        # ==================================
-
-        elif command.lower() in ["conversaciones", "historial"]:
-
-            if not jarvis_brain:
-                print("Módulo de aprendizaje no disponible.")
-            else:
-                jarvis_brain.get_recent_conversations()
-
-        # ==================================
-        # PLATAFORMA
-        # ==================================
-
-        elif command.lower() in ["plataforma", "platform"]:
-
-            if _detector:
-                info = _detector.get_info()
-                print(f"Plataforma: {info['friendly_name']}")
-                print(f"Sistema: {info['system']} ({info['machine']})")
-                print(f"Python: {info['python']}")
-                print(f"Escritorio: {'Si' if info['is_desktop'] else 'No'}")
-                print(f"Pantalla: {'Si' if info['has_display'] else 'No'}")
-                feats = _detector.get_available_features()
-                print(f"Funciones disponibles: {', '.join(feats)}")
-            else:
-                print("Detector de plataforma no disponible.")
-
-        # ==================================
-        # WEB REMOTE
-        # ==================================
-
-        elif command.lower().startswith("web"):
-
-            if not _web_server:
-                print("Servidor web no disponible.")
-            else:
-                parts = command.lower().split()
-                if len(parts) >= 2:
-                    if parts[1] in ("on", "start", "iniciar"):
-                        _web_server.start()
-                        print(f"Servidor web iniciado en {_web_server.get_url()}")
-                    elif parts[1] in ("off", "stop", "detener"):
-                        _web_server.stop()
-                        print("Servidor web detenido.")
-                    elif parts[1] in ("url", "ip"):
-                        print(f"URL: {_web_server.get_url()}")
-                    else:
-                        print("Uso: web on/off/url")
-                else:
-                    print(f"Estado: {'activo' if _web_server._running else 'inactivo'}")
-                    print(f"URL: {_web_server.get_url()}")
-
-        # ==================================
-        # FACE SWAP FUTURO
-        # ==================================
-
-        elif "modifica rostro" in command.lower():
-
-            print(
-                "Módulo FaceSwap aún en integración."
-            )
-
-        # ==================================
-        # MEJORA IA FUTURA
-        # ==================================
-
-        elif "mejora imagen" in command.lower():
-
-            print(
-                "Módulo Enhance AI aún en integración."
-            )
-
-        # ==================================
-        # RECONOCER ROSTRO
-        # ==================================
-
-        elif command.lower().startswith("reconocer"):
-
-            if not face_recognition_module:
-                print("Módulo de reconocimiento facial no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 2:
-                    img = parts[1]
-                    result = face_recognition_module.recognize(img)
-                    if result:
-                        print(f"Rostro reconocido como: {result[0]['name']} "
-                              f"({result[0]['confidence']}%)")
-                    else:
-                        print("No se reconoció ningún rostro conocido.")
-                else:
-                    print("Uso: reconocer <ruta_imagen>")
-
-        # ==================================
-        # REGISTRAR ROSTRO
-        # ==================================
-
-        elif command.lower().startswith("registrar rostro"):
-
-            if not face_recognition_module:
-                print("Módulo de reconocimiento facial no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 4:
-                    img = parts[2]
-                    name = parts[3]
-                    face_recognition_module.register_face(img, name)
-                    print(f"Rostro registrado como: {name}")
-                else:
-                    print("Uso: registrar rostro <ruta_imagen> <nombre>")
-
-        # ==================================
-        # VERIFICAR ROSTROS
-        # ==================================
-
-        elif command.lower().startswith("comparar rostros"):
-
-            if not face_recognition_module:
-                print("Módulo de reconocimiento facial no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 3:
-                    result = face_recognition_module.verify(parts[2], parts[3])
-                    if result:
-                        if result["verified"]:
-                            print(f"Coinciden ({result['confidence']}% confianza)")
-                        else:
-                            print(f"No coinciden (distancia: {result['distance']})")
-                    else:
-                        print("Error al comparar.")
-                else:
-                    print("Uso: comparar rostros <ruta1> <ruta2>")
-
-        # ==================================
-        # DETECTAR ROSTROS
-        # ==================================
-
-        elif command.lower().startswith("detectar rostros"):
-
-            if not face_recognition_module:
-                print("Módulo de reconocimiento facial no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 3:
-                    faces = face_recognition_module.detect_faces(parts[2])
-                    print(f"{len(faces)} rostro(s) detectado(s).")
-                else:
-                    print("Uso: detectar rostros <ruta_imagen>")
-
-        # ==================================
-        # BUSCAR CONOCIMIENTO
-        # ==================================
-
-        elif command.lower().startswith("buscar"):
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                query = command[7:].strip()
-                if not query:
-                    print("Uso: buscar <consulta>")
-                else:
-                    results = _knowledge.query(query)
-                    if results:
-                        print(f"\n{len(results)} resultado(s) para: {query}")
-                        for i, r in enumerate(results, 1):
-                            print(f"\n--- Resultado {i} (fuente: {r['source']}) ---")
-                            print(r['content'][:500])
-                    else:
-                        print(f"No encontré nada sobre \"{query}\" en mi conocimiento.")
-
-        # ==================================
-        # ABSORBER CONOCIMIENTO DE URL
-        # ==================================
-
-        elif command.lower().startswith("aprende de"):
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                import shlex
-                parts = shlex.split(command)
-                if len(parts) >= 3 and parts[1] == "de":
-                    url = parts[2]
-                    print(f"Absorbiendo conocimiento de {url}...")
-                    ok, msg = _knowledge.absorb_url(url)
-                    print(f"Resultado: {msg}")
-                else:
-                    print("Uso: aprende de <url>")
-
-        # ==================================
-        # QUE SABES (MOTOR DE CONOCIMIENTO)
-        # ==================================
-
-        elif command.lower() in ["que sabes de conocimiento", "stats conocimiento", "knowledge stats"]:
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                stats = _knowledge.get_stats()
-                print(f"\n--- Estadísticas de Conocimiento ---")
-                print(f"Total absorbido: {stats['total_absorbed']} entradas")
-                print(f"Temas: {stats['topics']}")
-                print(f"Fuentes: {stats['sources']}")
-                print(f"Palabras clave indexadas: {stats['keywords_indexed']}")
-                print(f"En esta sesion: {stats['session_absorbed']}")
-                topics = _knowledge.get_topics()
-                if topics:
-                    print(f"\nTemas disponibles: {', '.join(topics[:20])}")
-
-        # ==================================
-        # TEMAS DE CONOCIMIENTO
-        # ==================================
-
-        elif command.lower().startswith("temas"):
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                topics = _knowledge.get_topics()
-                if topics:
-                    print(f"\nTemas ({len(topics)}):")
-                    for t in sorted(topics):
-                        print(f"  - {t}")
-                else:
-                    print("No hay temas registrados aun.")
-
-        # ==================================
-        # OLVIDAR TEMA
-        # ==================================
-
-        elif command.lower().startswith("olvida tema"):
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                topic = command[12:].strip()
-                if topic:
-                    ok, msg = _knowledge.forget_topic(topic)
-                    print(msg)
-                else:
-                    print("Uso: olvida tema <nombre_tema>")
-
-        # ==================================
-        # IA - PREGUNTAR A BACKENDS
-        # ==================================
-
-        elif command.lower().startswith("ia"):
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                query = command[3:].strip()
-                if not query:
-                    backends = _knowledge.get_available_ai_backends()
-                    if backends:
-                        print(f"Backends IA disponibles: {', '.join(backends.keys())}")
-                    else:
-                        print("No hay backends IA disponibles. Usa: 'ia <pregunta>'")
-                else:
-                    print(f"Consultando a las IAs sobre: {query}")
-                    ok, msg = _knowledge.absorb_from_ai(query)
-                    result = _knowledge.query(query, max_results=1)
-                    if result:
-                        print(f"\n{result[0]['content'][:600]}")
-                    else:
-                        print(f"No se pudo obtener respuesta. {msg}")
-
-        # ==================================
-        # LISTAR BACKENDS IA
-        # ==================================
-
-        elif command.lower() in ["ia backends", "backends"]:
-
-            if not _knowledge:
-                print("Motor de conocimiento no disponible.")
-            else:
-                all_b = _knowledge.get_all_ai_backends()
-                avail = _knowledge.get_available_ai_backends()
-                print("\n--- Backends IA ---")
-                for name, backend in all_b.items():
-                    status = "DISPONIBLE" if name in avail else "NO DISP."
-                    print(f"  {name}: {status}")
-                if not all_b:
-                    print("  (no se encontraron backends)")
-
-        # ==================================
-        # ANALIZAR CÓDIGO
-        # ==================================
-
-        elif command.lower().startswith("analiza codigo") or command.lower().startswith("analiza"):
-
-            if not _code_analyzer:
-                print("Analizador de codigo no disponible.")
-            else:
-                text = command.split(None, 1)
-                if len(text) >= 2:
-                    codigo = text[1]
-                    res = _code_analyzer.analizar(codigo)
-                    if res.get("error"):
-                        print(f"Error: {res['error']}")
-                    else:
-                        print(f"\n--- Analisis de codigo ({res['lenguaje']}) ---")
-                        print(f"  Lineas: {res['lineas']}")
-                        print(f"  Funciones: {res['total_funciones']}")
-                        print(f"  Clases: {res['total_clases']}")
-                        print(f"  Imports: {res['total_imports']}")
-                        if res['funciones']:
-                            print(f"\n  Funciones detectadas:")
-                            for fn in res['funciones'][:10]:
-                                print(f"    - {fn['nombre']} (linea {fn.get('linea', '?')})")
-                        if res['clases']:
-                            print(f"\n  Clases detectadas:")
-                            for cls in res['clases'][:10]:
-                                print(f"    - {cls['nombre']} (linea {cls.get('linea', '?')})")
-                else:
-                    print("Uso: analiza <codigo>")
-
-        # ==================================
-        # TRADUCIR CÓDIGO
-        # ==================================
-
-        elif command.lower().startswith("traduce"):
-
-            if not _code_analyzer:
-                print("Analizador de codigo no disponible.")
-            else:
-                parts = command.split(None, 2)
-                if len(parts) >= 3:
-                    destino = parts[1].lower()
-                    codigo = parts[2]
-                    origen = _code_analyzer.detectar_lenguaje(codigo)
-                    print(f"Detectado: {origen} -> {destino}")
-                    res = _code_analyzer.traducir(codigo, origen=origen, destino=destino)
-                    if res.get("ok"):
-                        print(f"\n--- Codigo {destino.upper()} ---")
-                        print(res['codigo'])
-                    else:
-                        print("No se pudo traducir (prueba con IA disponible)")
-                else:
-                    print("Uso: traduce <destino> <codigo>")
-                    print("Ej: traduce javascript 'def hola(): print(1)'")
-
-        # ==================================
-        # EXPLICAR CÓDIGO
-        # ==================================
-
-        elif command.lower().startswith("explica"):
-
-            if not _code_analyzer:
-                print("Analizador de codigo no disponible.")
-            else:
-                text = command.split(None, 1)
-                if len(text) >= 2:
-                    codigo = text[1]
-                    res = _code_analyzer.explicar(codigo)
-                    print(f"\n--- Explicacion ({res['lenguaje']}) ---")
-                    print(res['explicacion'][:800])
-                else:
-                    print("Uso: explica <codigo>")
-
-        # ==================================
-        # GENERAR CÓDIGO
-        # ==================================
-
-        elif command.lower().startswith("genera codigo"):
-
-            if not _code_analyzer:
-                print("Analizador de codigo no disponible.")
-            else:
-                parts = command.split(None, 2)
-                if len(parts) >= 3:
-                    lenguaje = parts[2].lower()
-                    desc = input("Describe el codigo que quieres generar: ")
-                    res = _code_analyzer.generar_codigo(desc, lenguaje)
-                    if res.get("ok"):
-                        print(f"\n--- Codigo {lenguaje.upper()} generado ---")
-                        print(res['codigo'])
-                    else:
-                        print(f"Error: {res.get('error', 'No se pudo generar')}")
-                else:
-                    print("Uso: genera codigo <lenguaje>")
-                    print("Te pedire la descripcion a continuacion.")
-
-        # ==================================
-        # INDEXAR CÓDIGO
-        # ==================================
-
-        elif command.lower().startswith("indexa codigo"):
-
-            if not _code_analyzer or not _knowledge:
-                print("Analizador o knowledge no disponible.")
-            else:
-                text = command.split(None, 2)
-                if len(text) >= 2:
-                    codigo = text[1]
-                    ok, msg = _code_analyzer.indexar_en_conocimiento(codigo)
-                    print(msg)
-                else:
-                    print("Uso: indexa codigo <codigo>")
-
-        # ==================================
-        # DETECTAR LENGUAJE
-        # ==================================
-
-        elif command.lower().startswith("que lenguaje es"):
-
-            if not _code_analyzer:
-                print("Analizador de codigo no disponible.")
-            else:
-                text = command.split(None, 3)
-                if len(text) >= 2:
-                    codigo = text[-1]
-                    lang = _code_analyzer.detectar_lenguaje(codigo)
-                    print(f"Lenguaje detectado: {lang}")
-                else:
-                    print("Uso: que lenguaje es <codigo>")
-
-        # ==================================
-        # COMANDO DESCONOCIDO
-        # ==================================
-
+                self.lbl_indicador.text = "[color=FF0000][b]ALERTA: ACCESO DENEGADO[/b][/color]\nRostro no coincide con el Dueno Maestro."
+
+
+class JosamickApp(App):
+    def build(self):
+        sm = ScreenManager()
+        sm.add_widget(PantallaRegistroDueno(name='registro'))
+        sm.add_widget(PantallaDesbloqueoBiometrico(name='desbloqueo'))
+        sm.add_widget(PantallaDashboardC2(name='dashboard'))
+
+        storage = KetaStorageManager()
+        if storage.verificar_si_tiene_dueno():
+            sm.current = 'desbloqueo'
         else:
+            sm.current = 'registro'
 
-            msg = "Comando no reconocido."
-            print(msg)
-            if jarvis_brain:
-                jarvis_brain.record_conversation(command, msg)
+        return sm
 
-    except KeyboardInterrupt:
 
-        logger.warning(
-            "Interrupción manual detectada."
-        )
-
-        print("\nJarvis detenido.")
-
-        break
-
-    except Exception as error:
-
-        error_manager.handle_error(
-            error,
-            "MAIN_LOOP"
-        )
-
-        print(
-            "Ocurrió un error, pero Jarvis sigue estable."
-        )
-
+if __name__ == '__main__':
+    JosamickApp().run()

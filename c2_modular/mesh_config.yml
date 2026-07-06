@@ -1,0 +1,33 @@
+# ─── JOSAMICK MESH CONFIG ──────────────────────────────────────────
+# Configuracion de comunicacion interna entre modulos.
+# Si mueves un modulo a otro servidor, solo cambia la IP aqui.
+
+services:
+  c2:
+    internal_host: c2
+    internal_port: 9090
+    external_host: ${C2_HOST:-0.0.0.0}
+    external_port: ${C2_PORT:-9090}
+    protocol: http
+
+  brain:
+    internal_host: brain
+    internal_port: 5001
+    external_host: ${JOSAMICK_HOST:-0.0.0.0}
+    external_port: ${JOSAMICK_PORT:-5001}
+    protocol: http
+
+  frontend:
+    internal_host: frontend
+    internal_port: 5002
+    external_host: ${KEXPLER_HOST:-0.0.0.0}
+    external_port: ${KEXPLER_PORT:-5002}
+    protocol: http
+
+network:
+  bridge_name: josamick_mesh
+  subnet: 172.28.0.0/16
+
+persistence:
+  data_volume: josamick_data
+  mount_path: /app/data

@@ -1,0 +1,51 @@
+{
+    "rutas_volatiles": {
+        "n1": {
+            "direccion": "a",
+            "alcance": 1,
+            "activo": false,
+            "ultimo_latido": 1781863787.711616,
+            "estado": "INACTIVO"
+        },
+        "n2": {
+            "direccion": "b",
+            "alcance": 1,
+            "activo": false,
+            "ultimo_latido": 1781863837.711616,
+            "estado": "INACTIVO"
+        },
+        "n3": {
+            "direccion": "c",
+            "alcance": 1,
+            "activo": false,
+            "ultimo_latido": 1781863807.711616,
+            "estado": "INACTIVO"
+        },
+        "n4": {
+            "direccion": "d",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781863982.711616,
+            "estado": "ACTIVO"
+        },
+        "nodo-b": {
+            "direccion": "192.168.1.20",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781864428.2764857,
+            "estado": "ACTIVO"
+        },
+        "nodo-real": {
+            "direccion": "192.168.1.10",
+            "alcance": 1,
+            "activo": true,
+            "ultimo_latido": 1781895749.2347565,
+            "estado": "ACTIVO"
+        }
+    },
+    "saltos": {
+        "nodo-A->destino": 2,
+        "nodo-B->destino": 1,
+        "nodo-C->destino": 1
+    }
+}

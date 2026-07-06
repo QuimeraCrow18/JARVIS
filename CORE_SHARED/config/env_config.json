@@ -1,0 +1,32 @@
+{
+    "os_type": "windows",
+    "is_termux": false,
+    "system": "windows",
+    "platform": "windows-10-10.0.18363-sp0",
+    "hostname": "DESKTOP-5BKB78O",
+    "architecture": "AMD64",
+    "python_version": "3.12.9",
+    "paths": {
+        "data": "C:\\Users\\alba\\AppData\\Roaming\\JARVIS",
+        "config": "C:\\JARVIS\\config",
+        "logs": "C:\\JARVIS\\logs",
+        "temp": "C:\\Users\\alba\\AppData\\Local\\Temp",
+        "home": "C:\\Users\\alba"
+    },
+    "commands": {
+        "list_dir": "dir",
+        "create_dir": "mkdir",
+        "remove_file": "del",
+        "remove_dir": "rmdir /s /q",
+        "process_kill": "taskkill /F /IM",
+        "process_list": "tasklist",
+        "shell": "cmd.exe",
+        "shell_args": [
+            "/C"
+        ],
+        "ping": "ping -n 1",
+        "network_stats": "netstat -an"
+    },
+    "separator": "\\",
+    "shell": "C:\\Windows\\system32\\cmd.exe"
+}

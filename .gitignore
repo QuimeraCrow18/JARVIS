@@ -1,51 +1,13 @@
-# Python
+.env
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
+*.pyc
+*.pyo
 .venv/
 venv/
-ENV/
-
-# Logs
-logs/
+*.db
+*.enc
+data/forensics/*
+!data/forensics/.gitkeep
+CORE_SHARED/forensics/*
+!CORE_SHARED/forensics/.gitkeep
 *.log
-
-# Data
-data/*.db
-data/*.json
-
-# OS
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-
-# IDE
-.vscode/
-.idea/
-*.code-workspace
-*.sublime-*
-
-# Project
-.modules_autoreg_flag
-.env
-*.local

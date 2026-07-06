@@ -1,0 +1,127 @@
+{
+    "_version": "1.0",
+    "_disclaimer": "Esta información es estrictamente educativa y no sustituye la consulta con un profesional de la salud.",
+    "_description": "Base de datos de información farmacológica de referencia. No apta para diagnóstico ni prescripción.",
+    "drugs": [
+        {
+            "name": "Paracetamol",
+            "aliases": ["Acetaminofén", "Tylenol", "Panadol", "Apiretal", "Efferalgan"],
+            "chemical_family": "Derivado del para-aminofenol (analgésico no opioide)",
+            "uses": ["Fiebre", "Dolor leve a moderado (cefalea, mialgia, odontalgia, dismenorrea)"],
+            "contraindications": ["Insuficiencia hepática grave", "Hipersensibilidad al principio activo"],
+            "warnings": "Dosis máxima diaria: 4g en adultos (3g en ancianos). No combinar con alcohol. Riesgo de hepatotoxicidad en sobredosis. El antídoto es la N-acetilcisteína.",
+            "pregnancy_category": "B (EEUU) / A (Australia) — Seguro en dosis terapéuticas",
+            "interactions": ["Alcohol (aumenta hepatotoxicidad)", "Anticoagulantes orales (posible potenciación)"]
+        },
+        {
+            "name": "Ibuprofeno",
+            "aliases": ["Advil", "Motrin", "Brufen", "Nurofen", "Dalsy"],
+            "chemical_family": "Antiinflamatorio no esteroideo (AINE) — derivado del ácido propiónico",
+            "uses": ["Fiebre", "Dolor leve a moderado", "Inflamación (artritis, tendinitis, esguinces)", "Dismenorrea"],
+            "contraindications": ["Insuficiencia renal grave", "Insuficiencia hepática grave", "Úlcera péptica activa", "Hemorragia gastrointestinal", "Tercer trimestre del embarazo", "Asma sensible a AINEs"],
+            "warnings": "Tomar con alimentos para reducir irritación gástrica. No superar 1200mg/día sin prescripción. Riesgo cardiovascular en dosis altas prolongadas. Los AINEs pueden enmascarar signos de infección.",
+            "pregnancy_category": "C (primer y segundo trimestre) / D (tercer trimestre)",
+            "interactions": ["Anticoagulantes (aumenta riesgo hemorrágico)", "Corticosteroides (aumenta úlcera gástrica)", "Diuréticos (reduce efecto)", "Litio (aumenta niveles)"]
+        },
+        {
+            "name": "Amoxicilina",
+            "aliases": ["Amoxil", "Trimox", "Clamoxyl"],
+            "chemical_family": "Penicilina semisintética (antibiótico betalactámico del grupo de las aminopenicilinas)",
+            "uses": ["Infecciones bacterianas: otitis media, sinusitis, faringitis, amigdalitis", "Infecciones respiratorias bajas", "Infecciones urinarias", "Enfermedad de Lyme (estadio temprano)", "Profilaxis endocarditis bacteriana"],
+            "contraindications": ["Hipersensibilidad a penicilinas", "Hipersensibilidad a betalactámicos (cefalosporinas)"],
+            "warnings": "Completar siempre el ciclo de tratamiento. Puede causar diarrea por alteración de flora intestinal. Riesgo de reacción alérgica grave (anafilaxia). La mononucleosis infecciosa aumenta riesgo de rash cutáneo.",
+            "pregnancy_category": "B (EEUU) — Seguro en embarazo bajo prescripción",
+            "interactions": ["Anticonceptivos orales (posible reducción eficacia)", "Metotrexato (aumenta toxicidad)", "Warfarina (aumenta INR)"]
+        },
+        {
+            "name": "Amoxicilina-Ácido Clavulánico",
+            "aliases": ["Augmentin", "Clavulin", "Amoxiclav"],
+            "chemical_family": "Penicilina semisintética + inhibidor de betalactamasa",
+            "uses": ["Infecciones bacterianas resistentes a amoxicilina sola", "Sinusitis bacteriana", "Otitis media recurrente", "Infecciones respiratorias", "Mordeduras humanas o animales"],
+            "contraindications": ["Hipersensibilidad a betalactámicos", "Insuficiencia hepática asociada a tratamientos previos"],
+            "warnings": "Mayor incidencia de diarrea que amoxicilina sola. Monitorizar función hepática en tratamientos prolongados. Tomar con alimentos para reducir molestias GI.",
+            "pregnancy_category": "B (EEUU)",
+            "interactions": ["Mismos que amoxicilina"]
+        },
+        {
+            "name": "Omeprazol",
+            "aliases": ["Prilosec", "Losec", "Aulcer", "Mepral"],
+            "chemical_family": "Inhibidor de la bomba de protones (IBP) — derivado benzimidazólico",
+            "uses": ["Enfermedad por reflujo gastroesofágico (ERGE)", "Úlcera péptica (gástrica y duodenal)", "Profilaxis de úlcera por AINEs", "Síndrome de Zollinger-Ellison", "Eradicación de Helicobacter pylori (en combinación)"],
+            "contraindications": ["Hipersensibilidad al omeprazol", "Uso concomitante con rilpivirina", "Osteoporosis grave (uso prolongado)"],
+            "warnings": "Uso prolongado (>1 año) asociado a: deficiencia de vitamina B12, osteoporosis/fracturas, nefritis intersticial, hipomagnesemia. Tomar 30-60 min antes del desayuno. No usar más de 14 días sin supervisión médica.",
+            "pregnancy_category": "C (EEUU)",
+            "interactions": ["Clopidogrel (reduce eficacia)", "Metotrexato (aumenta toxicidad)", "Antifúngicos azólicos (reduce absorción)", "Digoxina (aumenta niveles)"]
+        },
+        {
+            "name": "Salbutamol",
+            "aliases": ["Albuterol", "Ventolin", "Salbutamol", "Butamol"],
+            "chemical_family": "Agonista beta-2 adrenérgico de acción corta (broncodilatador)",
+            "uses": ["Asma bronquial (alivio agudo)", "Enfermedad Pulmonar Obstructiva Crónica (EPOC)", "Broncoespasmo inducido por ejercicio"],
+            "contraindications": ["Hipersensibilidad al salbutamol", "Taquiarritmias no controladas"],
+            "warnings": "Uso excesivo indica mal control del asma — requiere reevaluación médica. Puede causar taquicardia, temblor y ansiedad. No es tratamiento de mantenimiento (no reemplaza corticosteroides inhalados).",
+            "pregnancy_category": "C (EEUU) — Beneficio supera riesgo en asma materna",
+            "interactions": ["Betabloqueantes (antagonizan efecto)", "Diuréticos (hipokalemia)", "Antidepresivos tricíclicos (aumentan efecto cardiovascular)"]
+        },
+        {
+            "name": "Metformina",
+            "aliases": ["Glucophage", "Riomet", "Diaformin", "Apotex Metformin"],
+            "chemical_family": "Biguanida (antidiabético oral)",
+            "uses": ["Diabetes mellitus tipo 2 (primera línea)", "Síndrome de ovario poliquístico (SOP, off-label)", "Prevención de diabetes en prediabetes"],
+            "contraindications": ["Insuficiencia renal (TFG <30 mL/min)", "Insuficiencia hepática grave", "Acidosis metabólica aguda", "Insuficiencia cardíaca descompensada", "Consumo excesivo de alcohol"],
+            "warnings": "Riesgo de acidosis láctica (raro pero grave). Suspender 48h antes de cirugía o estudios con contraste yodado. Puede causar déficit de vitamina B12 en uso prolongado. Tomar con alimentos para reducir molestias GI.",
+            "pregnancy_category": "B (EEUU) — Puede usarse durante embarazo si está indicado",
+            "interactions": ["Contraste yodado (riesgo acidosis láctica)", "Alcohol (riesgo acidosis láctica)", "Corticosteroides (hiperglucemia)", "Diuréticos (pueden afectar función renal)"]
+        },
+        {
+            "name": "Diazepam",
+            "aliases": ["Valium", "Diazepam", "Stesolid", "Diolan"],
+            "chemical_family": "Benzodiazepina",
+            "uses": ["Trastorno de ansiedad generalizada", "Crisis de pánico", "Sedación preprocedimiento", "Estatus epiléptico", "Síndrome de abstinencia alcohólica", "Relajante muscular (espasmos)"],
+            "contraindications": ["Miastenia gravis", "Insuficiencia respiratoria grave", "Apnea del sueño", "Insuficiencia hepática grave", "Glaucoma de ángulo estrecho", "Dependencia a benzodiazepinas previa"],
+            "warnings": "ALTA CAPACIDAD DE DEPENDENCIA. Uso máximo recomendado: 2-4 semanas. No suspender bruscamente (síndrome de abstinencia: insomnio, ansiedad rebote, convulsiones). Puede causar sedación diurna y deterioro cognitivo. Evitar alcohol y conducción. Los ancianos tienen mayor riesgo de caídas.",
+            "pregnancy_category": "D (EEUU) — Evitar durante embarazo y lactancia",
+            "interactions": ["Alcohol (depresión respiratoria)", "Opioides (depresión respiratoria —riesgo fatal)", "Antihistamínicos (sedación aditiva)", "Inhibidores CYP2C19 (aumentan niveles)"]
+        },
+        {
+            "name": "Loratadina",
+            "aliases": ["Claritin", "Loratadine", "Loratadin", "Alavert"],
+            "chemical_family": "Antihistamínico de segunda generación (antagonista H1, no sedante)",
+            "uses": ["Rinitis alérgica estacional", "Urticaria crónica idiopática", "Conjuntivitis alérgica"],
+            "contraindications": ["Hipersensibilidad a loratadina", "Insuficiencia hepática grave (ajustar dosis)"],
+            "warnings": "Menor sedación que antihistamínicos de primera generación. No requiere ajuste en insuficiencia renal. Dosis: 10mg/día en adultos y niños >6 años.",
+            "pregnancy_category": "B (EEUU) — Generalmente seguro",
+            "interactions": ["Amiodarona (aumenta riesgo cardíaco)", "Fluconazol (aumenta niveles de loratadina)"]
+        },
+        {
+            "name": "Sertralina",
+            "aliases": ["Zoloft", "Sertraline", "Aremis", "Besitran"],
+            "chemical_family": "Inhibidor selectivo de la recaptación de serotonina (ISRS)",
+            "uses": ["Trastorno depresivo mayor", "Trastorno obsesivo-compulsivo (TOC)", "Trastorno de ansiedad social", "Trastorno de pánico", "Trastorno por estrés postraumático (TEPT)", "Trastorno disfórico premenstrual"],
+            "contraindications": ["Hipersensibilidad a sertralina", "Uso concomitante con IMAO (riesgo de síndrome serotoninérgico)", "Uso con pimozida", "Episodio maníaco activo"],
+            "warnings": "Periodo de latencia: 2-4 semanas para efecto terapéutico completo. Puede aumentar riesgo de ideación suicida en menores de 25 años al inicio. Síndrome de discontinuación por suspensión brusca (mareo, náusea, fatiga). Riesgo de síndrome serotoninérgico si se combina con otros serotoninérgicos.",
+            "pregnancy_category": "C (EEUU) — Riesgo de hipertensión pulmonar persistente neonatal si se usa en tercer trimestre",
+            "interactions": ["IMAO (contraindicado — síndrome serotoninérgico)", "AINEs (aumentan riesgo hemorrágico)", "Alcohol (potenciación)", "Hierba de San Juan (síndrome serotoninérgico)"]
+        },
+        {
+            "name": "Ácido Acetilsalicílico",
+            "aliases": ["Aspirina", "ASA", "AAS", "Aspirina Protect", "Cardioaspirina"],
+            "chemical_family": "Antiinflamatorio no esteroideo (AINE) — salicilato",
+            "uses": ["Dolor leve a moderado", "Fiebre", "Inflamación", "Prevención cardiovascular (dosis baja: 100-300mg/día)", "Profilaxis de accidente cerebrovascular", "Prevención de preeclampsia (dosis baja)"],
+            "contraindications": ["Úlcera péptica activa", "Hemorragia gastrointestinal", "Insuficiencia hepática grave", "Insuficiencia renal grave", "Asma sensible a AINEs", "Menores de 16 años (riesgo de síndrome de Reye)", "Tercer trimestre del embarazo"],
+            "warnings": "No administrar a menores de 16 años por riesgo de síndrome de Reye. Riesgo de sangrado gastrointestinal incluso a dosis bajas. Suspender 7 días antes de cirugía. Sobredosis: acidosis metabólica, tinnitus, hiperventilación. El antídoto es bicarbonato de sodio.",
+            "pregnancy_category": "C (1er y 2do trimestre) / D (3er trimestre — evitar)",
+            "interactions": ["Anticoagulantes (aumenta riesgo hemorrágico)", "Metotrexato (aumenta toxicidad)", "Corticosteroides (úlcera GI)", "Ibuprofeno (interfiere con efecto antiagregante)"]
+        },
+        {
+            "name": "Hidroclorotiazida",
+            "aliases": ["HCTZ", "Esidrix", "Hydrodiuril", "Dichlotride"],
+            "chemical_family": "Diurético tiazídico",
+            "uses": ["Hipertensión arterial", "Edema asociado a insuficiencia cardíaca", "Nefrolitiasis por hipercalciuria (profilaxis)", "Diabetes insípida nefrogénica"],
+            "contraindications": ["Anuria", "Insuficiencia renal grave (TFG <30 mL/min)", "Hipersensibilidad a sulfonamidas (derivados)", "Hipercalcemia", "Hiponatremia refractaria", "Gota activa"],
+            "warnings": "Monitorizar electrolitos: riesgo de hipokalemia, hiponatremia, hipomagnesemia. Puede elevar ácido úrico (gota). Fotosensibilidad. Dosis: 12.5-50mg/día. Tomar por la mañana para evitar nocturia.",
+            "pregnancy_category": "B (EEUU) — Usar solo si está claramente indicado en embarazo",
+            "interactions": ["Digoxina (riesgo de toxicidad por hipokalemia)", "Litio (aumenta niveles)", "Corticosteroides (hipokalemia)", "AINEs (reducen efecto antihipertensivo)"]
+        }
+    ]
+}

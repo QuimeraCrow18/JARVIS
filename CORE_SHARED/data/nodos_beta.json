@@ -1,0 +1,25 @@
+{
+    "nodos_registrados": {
+        "bridge-test": {
+            "dispositivo": "raspberry-pi-01",
+            "estado_nodo": "ONLINE"
+        },
+        "otro": {
+            "dispositivo": "esp32",
+            "estado_nodo": "ONLINE"
+        },
+        "sync-test": {
+            "dispositivo": "laptop",
+            "estado_nodo": "ONLINE"
+        },
+        "centinela-test": {
+            "dispositivo": "test-device",
+            "estado_nodo": "ONLINE"
+        },
+        "nodo-autorizado": {
+            "dispositivo": "raspberry",
+            "estado_nodo": "ONLINE"
+        }
+    },
+    "cola_mesh_offline": []
+}

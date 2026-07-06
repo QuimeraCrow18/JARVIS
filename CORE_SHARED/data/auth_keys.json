@@ -1,0 +1,14 @@
+{
+    "test-node": {
+        "salt": "0f24acd234824616578f963edc264986",
+        "hash": "766dc2cc40b302fab428e8d838eb8df7dac6875652d811766845d65afaf75a2e"
+    },
+    "test-rate": {
+        "salt": "c103a8e3bb107907cdf41d4c817d2838",
+        "hash": "eb6edf343f31a7f8ca13e867d39b605f55b04a25748c9828fadb26278886c194"
+    },
+    "test-hack": {
+        "salt": "28723a5602c1bb0e19ff88c91f012d85",
+        "hash": "68337dbc8b7cd2aee28e283e836172e4bc17968408eb1bac28be21a4bee8e0f4"
+    }
+}
